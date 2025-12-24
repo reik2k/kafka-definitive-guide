@@ -200,6 +200,7 @@ exactly_once_beta is a slightly different method of handling application instanc
 
 But what if we want exactly-once guarantees without using Kafka Streams? In this case we will use transactional APIs directly. Here’s a snippet showing how this will work. There is a full example in the Apache Kafka GitHub, which includes a demo driver and a simple exactly-once processor that runs in separate threads:
 
+```java
 Properties producerProps = new Properties();
 producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 producerProps.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
@@ -240,7 +241,7 @@ while (true) {
     producer.abortTransaction(); 
     resetToLastCommittedPositions(consumer);
   }}
-
+```
 Configuring a producer with transactional.id makes it a transactional producer capable of producing atomic multipartition writes. The transactional ID must be unique and long-lived. Essentially it defines an instance of the application.
 
 
