@@ -67,7 +67,7 @@ This is the easy part. Add `enable.idempotence=true` to the producer configurati
 
 > **NOTE**
 >
-> Idempotent producer logic and error handling improved significantly in version 2.5 (both on the producer side and the broker side) as a result of KIP-360. Prior to release 2.5, the producer state was not always maintained for long enough, which resulted in fatal UNKNOWN_PRODUCER_ID errors in various scenarios. In newer versions, if we encounter a fatal error for a record batch, this batch and all the batches that are in flight will be rejected.
+> Idempotent producer logic and error handling improved significantly in version 2.5 (both on the producer side and the broker side) as a result of KIP-360. Prior to release 2.5, the producer state was not always maintained for long enough, which resulted in fatal `UNKNOWN_PRODUCER_ID` errors in various scenarios. In newer versions, if we encounter a fatal error for a record batch, this batch and all the batches that are in flight will be rejected.
 
 ## Transactions
 
