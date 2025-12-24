@@ -103,6 +103,233 @@ If the stream processing application only performs single record transformation 
 
 Financial applications are typical examples of complex stream processing applications where exactly-once capabilities are used to guarantee accurate aggregation. However, because it is rather trivial to configure any Kafka Streams application to provide exactly-once guarantees, we've seen it enabled in more mundane use cases, including, for instance, chatbots.
 
+### What Problems Do Transactions Solve?
+
+Consider a simple stream processing application: it reads events from a source topic, maybe processes them, and writes results to another topic. We want to be sure that for each message we process, the results are written exactly once. What can possibly go wrong?
+
+It turns out that quite a few things could go wrong. Let’s look at two scenarios.
+
+Reprocessing caused by application crashes
+After consuming a message from the source cluster and processing it, the application has to do two things: produce the result to the output topic, and commit the offset of the message that we consumed. Suppose that these two separate actions happen in this order. What happens if the application crashes after the output was produced but before the offset of the input was committed?
+
+In Chapter 4, we discussed what happens when a consumer crashes. After a few seconds, the lack of heartbeat will trigger a rebalance, and the partitions the consumer was consuming from will be reassigned to a different consumer. That consumer will begin consuming records from those partitions, starting at the last committed offset. This means that all the records that were processed by the application between the last committed offset and the crash will be processed again, and the results will be written to the output topic again—resulting in duplicates.
+
+Reprocessing caused by zombie applications
+What happens if our application just consumed a batch of records from Kafka and then froze or lost connectivity to Kafka before doing anything else with this batch of records?
+
+Just like in the previous scenario, after several heartbeats are missed, the application will be assumed dead and its partitions reassigned to another consumer in the consumer group. That consumer will reread that batch of records, process it, produce the results to an output topic, and continue on.
+
+Meanwhile, the first instance of the application—the one that froze—may resume its activity: process the batch of records it recently consumed, and produce the results to the output topic. It can do all that before it polls Kafka for records or sends a heartbeat and discovers that it is supposed to be dead and another instance now owns those partitions.
+
+A consumer that is dead but doesn’t know it is called a zombie. In this scenario, we can see that without additional guarantees, zombies can produce data to the output topic and cause duplicate results.
+
+How Do Transactions Guarantee Exactly-Once?
+Take our simple stream processing application. It reads data from one topic, processes it, and writes the result to another topic. Exactly-once processing means that consuming, processing, and producing are done atomically. Either the offset of the original message is committed and the result is successfully produced or neither of these things happen. We need to make sure that partial results—where the offset is committed but the result isn’t produced, or vice versa—can’t happen.
+
+To support this behavior, Kafka transactions introduce the idea of atomic multipartition writes. The idea is that committing offsets and producing results both involve writing messages to partitions. However, the results are written to an output topic, and offsets are written to the _consumer_offsets topic. If we can open a transaction, write both messages, and commit if both were written successfully—or abort to retry if they were not—we will get the exactly-once semantics that we are after.
+
+Figure 8-1 illustrates a simple stream processing application, performing an atomic multipartition write to two partitions while also committing offsets for the event it consumed.
+
+
+Figure 8-1. Transactional producer with atomic multipartition write
+To use transactions and perform atomic multipartition writes, we use a transactional producer. A transactional producer is simply a Kafka producer that is configured with a transactional.id and has been initialized using initTransactions(). Unlike producer.id, which is generated automatically by Kafka brokers, transactional.id is part of the producer configuration and is expected to persist between restarts. In fact, the main role of the transactional.id is to identify the same producer across restarts. Kafka brokers maintain transactional.id to producer.id mapping, so if initTransactions() is called again with an existing transactional.id, the producer will also be assigned the same producer.id instead of a new random number.
+
+Preventing zombie instances of the application from creating duplicates requires a mechanism for zombie fencing, or preventing zombie instances of the application from writing results to the output stream. The usual way of fencing zombies—using an epoch—is used here. Kafka increments the epoch number associated with a transactional.id when initTransaction() is invoked to initialize a transactional producer. Send, commit, and abort requests from producers with the same transactional.id but lower epochs will be rejected with the FencedProducer error. The older producer will not be able to write to the output stream and will be forced to close(), preventing the zombie from introducing duplicate records. In Apache Kafka 2.5 and later, there is also an option to add consumer group metadata to the transaction metadata. This metadata will also be used for fencing, which will allow producers with different transactional IDs to write to the same partitions while still fencing against zombie instances.
+
+Transactions are a producer feature for the most part—we create a transactional producer, begin the transaction, write records to multiple partitions, produce offsets in order to mark records as already processed, and commit or abort the transaction. We do all this from the producer. However, this isn’t quite enough—records written transactionally, even ones that are part of transactions that were eventually aborted, are written to partitions just like any other records. Consumers need to be configured with the right isolation guarantees, otherwise we won’t have the exactly-once guarantees we expected.
+
+We control the consumption of messages that were written transactionally by setting the isolation.level configuration. If set to read_committed, calling consumer.poll() after subscribing to a set of topics will return messages that were either part of a successfully committed transaction or that were written nontransactionally; it will not return messages that were part of an aborted transaction or a transaction that is still open. The default isolation.level value, read_uncommitted, will return all records, including those that belong to open or aborted transactions. Configuring read_committed mode does not guarantee that the application will get all messages that are part of a specific transaction. It is possible to subscribe to only a subset of topics that were part of the transaction and therefore get a subset of the messages. In addition, the application can’t know when transactions begin or end, or which messages are part of which transaction.
+
+Figure 8-2 shows which records are visible to a consumer in read_committed mode compared to a consumer with the default read_uncommitted mode.
+
+
+Figure 8-2. Consumers in read_committed mode will lag behind consumers with default configuration
+To guarantee that messages will be read in order, read_committed mode will not return messages that were produced after the point when the first still-open transaction began (known as the Last Stable Offset, or LSO). Those messages will be withheld until that transaction is committed or aborted by the producer, or until they reach transaction.timeout.ms (default of 15 minutes) and are aborted by the broker. Holding a transaction open for a long duration will introduce higher end-to-end latency by delaying consumers.
+
+Our simple stream processing job will have exactly-once guarantees on its output even if the input was written nontransactionally. The atomic multipartition produce guarantees that if the output records were committed to the output topic, the offset of the input records was also committed for that consumer, and as a result the input records will not be processed again.
+
+What Problems Aren’t Solved by Transactions?
+As explained earlier, transactions were added to Kafka to provide multipartition atomic writes (but not reads) and to fence zombie producers in stream processing applications. As a result, they provide exactly-once guarantees when used within chains of consume-process-produce stream processing tasks. In other contexts, transactions will either straight-out not work or will require additional effort in order to achieve the guarantees we want.
+
+The two main mistakes are assuming that exactly-once guarantees apply on actions other than producing to Kafka, and that consumers always read entire transactions and have information about transaction boundaries.
+
+The following are a few scenarios in which Kafka transactions won’t help achieve exactly-once guarantees.
+
+Side effects while stream processing
+Let’s say that the record processing step in our stream processing app includes sending email to users. Enabling exactly-once semantics in our app will not guarantee that the email will only be sent once. The guarantee only applies to records written to Kafka. Using sequence numbers to deduplicate records or using markers to abort or to cancel a transaction works within Kafka, but it will not un-send an email. The same is true for any action with external effects that is performed within the stream processing app: calling a REST API, writing to a file, etc.
+
+Reading from a Kafka topic and writing to a database
+In this case, the application is writing to an external database rather than to Kafka. In this scenario, there is no producer involved—records are written to the database using a database driver (likely JDBC) and offsets are committed to Kafka within the consumer. There is no mechanism that allows writing results to an external database and committing offsets to Kafka within a single transaction. Instead, we could manage offsets in the database (as explained in Chapter 4) and commit both data and offsets to the database in a single transaction—this would rely on the database’s transactional guarantees rather than Kafka’s.
+
+NOTE
+Microservices often need to update the database and publish a message to Kafka within a single atomic transaction, so either both will happen or neither will. As we’ve just explained in the last two examples, Kafka transactions will not do this.
+
+A common solution to this common problem is known as the outbox pattern. The microservice only publishes the message to a Kafka topic (the “outbox”), and a separate message relay service reads the event from Kafka and updates the database. Because, as we’ve just seen, Kafka won’t guarantee an exactly-once update to the database, it is important to make sure the update is idempotent.
+
+Using this pattern guarantees that the message will eventually make it to Kafka, the topic consumers, and the database—or to none of those.
+
+The inverse pattern—where a database table serves as the outbox and a relay service makes sure updates to the table will also arrive to Kafka as messages—is also used. This pattern is preferred when built-in RDBMS constraints, such as uniqueness and foreign keys, are useful. The Debezium project published an in-depth blog post on the outbox pattern with detailed examples.
+
+Reading data from a database, writing to Kafka, and from there writing to another database
+It is very tempting to believe that we can build an app that will read data from a database, identify database transactions, write the records to Kafka, and from there write records to another database, still maintaining the original transactions from the source database.
+
+Unfortunately, Kafka transactions don’t have the necessary functionality to support these kinds of end-to-end guarantees. In addition to the problem with committing both records and offsets within the same transaction, there is another difficulty: read_committed guarantees in Kafka consumers are too weak to preserve database transactions. Yes, a consumer will not see records that were not committed. But it is not guaranteed to have seen all the records that were committed within the transaction because it could be lagging on some topics; it has no information to identify transaction boundaries, so it can’t know when a transaction began and ended, and whether it has seen some, none, or all of its records.
+
+Copying data from one Kafka cluster to another
+This one is more subtle—it is possible to support exactly-once guarantees when copying data from one Kafka cluster to another. There is a description of how this is done in the Kafka improvement proposal for adding exactly-once capabilities in MirrorMaker 2.0. At the time of this writing, the proposal is still in draft, but the algorithm is clearly described. This proposal includes the guarantee that each record in the source cluster will be copied to the destination cluster exactly once.
+
+However, this does not guarantee that transactions will be atomic. If an app produces several records and offsets transactionally, and then MirrorMaker 2.0 copies them to another Kafka cluster, the transactional properties and guarantees will be lost during the copy process. They are lost for the same reason when copying data from Kafka to a relational database: the consumer reading data from Kafka can’t know or guarantee that it is getting all the events in a transaction. For example, it can replicate part of a transaction if it is only subscribed to a subset of the topics.
+
+Publish/subscribe pattern
+Here’s a slightly more subtle case. We’ve discussed exactly-once in the context of the consume-process-produce pattern, but the publish/subscribe pattern is a very common use case. Using transactions in a publish/subscribe use case provides some guarantees: consumers configured with read_committed mode will not see records that were published as part of a transaction that was aborted. But those guarantees fall short of exactly-once. Consumers may process a message more than once, depending on their own offset commit logic.
+
+The guarantees Kafka provides in this case are similar to those provided by JMS transactions but depend on consumers in read_committed mode to guarantee that uncommitted transactions will remain invisible. JMS brokers withhold uncommitted transactions from all consumers.
+
+WARNING
+An important pattern to avoid is publishing a message and then waiting for another application to respond before committing the transaction. The other application will not receive the message until after the transaction was committed, resulting in a deadlock.
+
+How Do I Use Transactions?
+Transactions are a broker feature and part of the Kafka protocol, so there are multiple clients that support transactions.
+
+The most common and most recommended way to use transactions is to enable exactly-once guarantees in Kafka Streams. This way, we will not use transactions directly at all, but rather Kafka Streams will use them for us behind the scenes to provide the guarantees we need. Transactions were designed with this use case in mind, so using them via Kafka Streams is the easiest and most likely to work as expected.
+
+To enable exactly-once guarantees for a Kafka Streams application, we simply set the processing.guarantee configuration to either exactly_once or exactly_once_​beta. That’s it.
+
+NOTE
+exactly_once_beta is a slightly different method of handling application instances that crash or hang with in-flight transactions. This was introduced in release 2.5 to Kafka brokers, and in release 2.6 to Kafka Streams. The main benefit of this method is the ability to handle many partitions with a single transactional producer and therefore create more scalable Kafka Streams applications. There is more information about the changes in the Kafka improvement proposal where they were first discussed.
+
+But what if we want exactly-once guarantees without using Kafka Streams? In this case we will use transactional APIs directly. Here’s a snippet showing how this will work. There is a full example in the Apache Kafka GitHub, which includes a demo driver and a simple exactly-once processor that runs in separate threads:
+
+Properties producerProps = new Properties();
+producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+producerProps.put(ProducerConfig.CLIENT_ID_CONFIG, "DemoProducer");
+producerProps.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionalId); 
+
+producer = new KafkaProducer<>(producerProps);
+
+Properties consumerProps = new Properties();
+consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false"); 
+consumerProps.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed"); 
+
+consumer = new KafkaConsumer<>(consumerProps);
+
+producer.initTransactions(); 
+
+consumer.subscribe(Collections.singleton(inputTopic)); 
+
+while (true) {
+  try {
+    ConsumerRecords<Integer, String> records =
+      consumer.poll(Duration.ofMillis(200));
+    if (records.count() > 0) {
+      producer.beginTransaction(); 
+      for (ConsumerRecord<Integer, String> record : records) {
+        ProducerRecord<Integer, String> customizedRecord = transform(record); 
+        producer.send(customizedRecord);
+      }
+      Map<TopicPartition, OffsetAndMetadata> offsets = consumerOffsets();
+      producer.sendOffsetsToTransaction(offsets, consumer.groupMetadata()); 
+      producer.commitTransaction(); 
+    }
+  } catch (ProducerFencedException|InvalidProducerEpochException e) { 
+    throw new KafkaException(String.format(
+      "The transactional.id %s is used by another process", transactionalId));
+  } catch (KafkaException e) {
+    producer.abortTransaction(); 
+    resetToLastCommittedPositions(consumer);
+  }}
+
+Configuring a producer with transactional.id makes it a transactional producer capable of producing atomic multipartition writes. The transactional ID must be unique and long-lived. Essentially it defines an instance of the application.
+
+
+Consumers that are part of the transactions don’t commit their own offsets—the producer writes offsets as part of the transaction. So offset commit should be disabled.
+
+
+In this example, the consumer reads from an input topic. We will assume that the records in the input topic were also written by a transactional producer (just for fun—there is no such requirement for the input). To read transactions cleanly (i.e., ignore in-flight and aborted transactions), we will set the consumer isolation level to read_committed. Note that the consumer will still read nontransactional writes, in addition to reading committed transactions.
+
+
+The first thing a transactional producer must do is initialize. This registers the transactional ID, bumps up the epoch to guarantee that other producers with the same ID will be considered zombies, and aborts older in-flight transactions from the same transactional ID.
+
+
+Here we are using the subscribe consumer API, which means that partitions assigned to this instance of the application can change at any point as a result of rebalance. Prior to release 2.5, which introduced API changes from KIP-447, this was much more challenging. Transactional producers had to be statically assigned a set of partitions, because the transaction fencing mechanism relied on the same transactional ID being used for the same partitions (there was no zombie fencing protection if the transactional ID changed). KIP-447 added new APIs, used in this example, that attach consumer-group information to the transaction, and this information is used for fencing. When using this method, it also makes sense to commit transactions whenever the related partitions are revoked.
+
+
+We consumed records, and now we want to process them and produce results. This method guarantees that everything that is produced from the time it was called, until the transaction is either committed or aborted, is part of a single atomic transaction.
+
+
+This is where we process the records—all our business logic goes here.
+
+
+As we explained earlier in the chapter, it is important to commit the offsets as part of the transaction. This guarantees that if we fail to produce results, we won’t commit the offsets for records that were not, in fact, processed. This method commits offsets as part of the transaction. Note that it is important not to commit offsets in any other way—disable offset auto-commit, and don’t call any of the consumer commit APIs. Committing offsets by any other method does not provide transactional guarantees.
+
+
+We produced everything we needed, we committed offsets as part of the transaction, and it is time to commit the transaction and seal the deal. Once this method returns successfully, the entire transaction has made it through, and we can continue to read and process the next batch of events.
+
+
+If we got this exception, it means we are the zombie. Somehow our application froze or disconnected, and there is a newer instance of the app with our transactional ID running. Most likely the transaction we started has already been aborted and someone else is processing those records. Nothing to do but die gracefully.
+
+
+If we got an error while writing a transaction, we can abort the transaction, set the consumer position back, and try again.
+
+Transactional IDs and Fencing
+Choosing the transactional ID for producers is important and a bit more challenging than it seems. Assigning the transactional ID incorrectly can lead to either application errors or loss of exactly-once guarantees. The key requirements are that the transactional ID will be consistent for the same instance of the application between restarts and is different for different instances of the application, otherwise the brokers will not be able to fence off zombie instances.
+
+Until release 2.5, the only way to guarantee fencing was to statically map the transactional ID to partitions. This guaranteed that each partition will always be consumed with the same transactional ID. If a producer with transactional ID A processed messages from topic T and lost connectivity, and the new producer that replaces it has transactional ID B, and later producer A comes back as a zombie, zombie A will not be fenced because the ID doesn’t match that of the new producer B. We want producer A to always be replaced by producer A, and the new producer A will have a higher epoch number and zombie A will be properly fenced away. In those releases, the previous example would be incorrect—transactional IDs are assigned randomly to threads without making sure the same transactional ID is always used to write to the same partition.
+
+In Apache Kafka 2.5, KIP-447 introduced a second method of fencing based on consumer group metadata for fencing in addition to transactional IDs. We use the producer offset commit method and pass as an argument the consumer group metadata rather than just the consumer group ID.
+
+Let’s say that we have topic T1 with two partitions, t-0 and t-1. Each is consumed by a separate consumer in the same group; each consumer passes records to a matching transactional producer—one with transactional ID A and the other with transactional ID B; and they are writing output to topic T2 partitions 0 and 1, respectively. Figure 8-3 illustrates this scenario.
+
+
+Figure 8-3. Transactional record processor
+As illustrated in Figure 8-4, if the application instance with consumer A and producer A becomes a zombie, consumer B will start processing records from both partitions. If we want to guarantee that no zombies write to partition 0, consumer B can’t just start reading from partition 0 and writing to partition 0 with transactional ID B. Instead the application will need to instantiate a new producer, with transactional ID A, to safely write to partition 0 and fence the old transactional ID A. This is wasteful. Instead, we include the consumer group information in the transactions. Transactions from producer B will show that they are from a newer generation of the consumer group, and therefore they will go through, while transactions from the now-zombie producer A will show an old generation of the consumer group and will be fenced.
+
+
+Figure 8-4. Transactional record processor after a rebalance
+How Transactions Work
+We can use transactions by calling the APIs without understanding how they work. But having some mental model of what is going on under the hood will help us troubleshoot applications that do not behave as expected.
+
+The basic algorithm for transactions in Kafka was inspired by Chandy-Lamport snapshots, in which “marker” control messages are sent into communication channels, and consistent state is determined based on the arrival of the marker. Kafka transactions use marker messages to indicate that transactions are committed or aborted across multiple partitions—when the producer decides to commit a transaction, it sends a “commit” message to the transaction coordinator, which then writes commit markers to all partitions involved in a transaction. But what happens if the producer crashes after only writing commit messages to a subset of the partitions? Kafka transactions solve this by using two-phase commit and a transaction log. At a high level, the algorithm will:
+
+Log the existence of an ongoing transaction, including the partitions involved
+
+Log the intent to commit or abort—once this is logged, we are doomed to commit or abort eventually
+
+Write all the transaction markers to all the partitions
+
+Log the completion of the transaction
+
+To implement this basic algorithm, Kafka needs a transaction log. We use an internal topic called __transaction_state.
+
+Let’s see how this algorithm works in practice by going through the inner workings of the transactional API calls we’ve used in the preceding code snippet.
+
+Before we begin the first transaction, producers need to register as transactional by calling initTransaction(). This request is sent to a broker that will be the transaction coordinator for this transactional producer. Each broker is the transactional coordinator for a subset of the producers, just like each broker is the consumer group coordinator for a subset of the consumer groups. The transaction coordinator for each transactional ID is the leader of the partition of the transaction log the transactional ID is mapped to.
+
+The initTransaction() API registers a new transactional ID with the coordinator, or increments the epoch of an existing transactional ID in order to fence off previous producers that may have become zombies. When the epoch is incremented, pending transactions will be aborted.
+
+The next step for the producer is to call beginTransaction(). This API call isn’t part of the protocol—it simply tells the producer that there is now a transaction in progress. The transaction coordinator on the broker side is still unaware that the transaction began. However, once the producer starts sending records, each time the producer detects that it is sending records to a new partition, it will also send Add​Par⁠titionsToTxnRequest to the broker informing it that there is a transaction in progress for this producer, and that additional partitions are part of the transaction. This information will be recorded in the transaction log.
+
+When we are done producing results and are ready to commit, we start by committing offsets for the records we’ve processed in this transaction. Committing offsets can be done at any time but must be done before the transaction is committed. Calling sendOffsetsToTransaction() will send a request to the transaction coordinator that includes the offsets and also the consumer group ID. The transaction coordinator will use the consumer group ID to find the group coordinator and commit the offsets as a consumer group normally would.
+
+Now it is time to commit—or abort. Calling commitTransaction() or abort​Transac⁠tion() will send an EndTransactionRequest to the transaction coordinator. The transaction coordinator will log the commit or abort intention to the transaction log. Once this step is successful, it is the transaction coordinator’s responsibility to complete the commit (or abort) process. It writes a commit marker to all the partitions involved in the transaction, then writes to the transaction log that the commit completed successfully. Note that if the transaction coordinator shuts down or crashes after logging the intention to commit and before completing the process, a new transaction coordinator will be elected, pick up the intent to commit from the transaction log, and complete the process.
+
+If a transaction is not committed or aborted within transaction.timeout.ms, the transaction coordinator will abort it automatically.
+
+WARNING
+Each broker that receives records from transactional or idempotent producers will store the producer/transactional IDs in memory, together with related state for each of the last five batches sent by the producer: sequence numbers, offsets, and such. This state is stored for transactional.id.expiration.ms milliseconds after the producer stopped being active (seven days by default). This allows the producer to resume activity without running into UNKNOWN_PRODUCER_ID errors. It is possible to cause something similar to a memory leak in the broker by creating new idempotent producers or new transactional IDs at a very high rate but never reusing them. Three new idempotent producers per second, accumulated over the course of a week, will result in 1.8 million producer state entries with a total of 9 million batch metadata stored, using around 5 GB RAM. This can cause out-of-memory or severe garbage collection issues on the broker. We recommend architecting the application to initialize a few long-lived producers when the application starts up, and then reuse them for the lifetime of the application. If this isn’t possible (Function as a Service makes this difficult), we recommend lowering transactional.id.​expira⁠tion.ms so the IDs will expire faster, and therefore old state that will never be reused won’t take up a significant part of the broker memory.
+
+Performance of Transactions
+Transactions add moderate overhead to the producer. The request to register transactional ID occurs once in the producer lifecycle. Additional calls to register partitions as part of a transaction happen at most one per partition for each transaction, then each transaction sends a commit request, which causes an extra commit marker to be written on each partition. The transactional initialization and transaction commit requests are synchronous, so no data will be sent until they complete successfully, fail, or time out, which further increases the overhead.
+
+Note that the overhead of transactions on the producer is independent of the number of messages in a transaction. So a larger number of messages per transaction will both reduce the relative overhead and reduce the number of synchronous stops, resulting in higher throughput overall.
+
+On the consumer side, there is some overhead involved in reading commit markers. The key impact that transactions have on consumer performance is introduced by the fact that consumers in read_committed mode will not return records that are part of an open transaction. Long intervals between transaction commits mean that the consumer will need to wait longer before returning messages, and as a result, end-to-end latency will increase.
+
+Note, however, that the consumer does not need to buffer messages that belong to open transactions. The broker will not return those in response to fetch requests from the consumer. Since there is no extra work for the consumer when reading transactions, there is no decrease in throughput either.
+
+
 ## Summary
 
 Exactly-once semantics in Kafka is the opposite of chess: it is challenging to understand but easy to use.
@@ -114,7 +341,3 @@ Both can be enabled in a single configuration and allow us to use Kafka for appl
 We discussed in depth specific scenarios and use cases to show the expected behavior, and even looked at some of the implementation details. Those details are important when troubleshooting applications or when using transactional APIs directly.
 
 By understanding what Kafka's exactly-once semantics guarantee in which use case, we can design applications that will use exactly-once when necessary. Application behavior should not be surprising, and the information in this chapter will help us avoid surprises.
-
----
-
-**Note**: This chapter file is being updated with the complete content from the O'Reilly book. Additional sections on transactions implementation details, performance, and use cases are being added.
