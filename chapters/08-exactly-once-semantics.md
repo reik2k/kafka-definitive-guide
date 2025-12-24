@@ -109,12 +109,12 @@ Consider a simple stream processing application: it reads events from a source t
 
 It turns out that quite a few things could go wrong. Let’s look at two scenarios.
 
-Reprocessing caused by application crashes
+#### Reprocessing caused by application crashes
 After consuming a message from the source cluster and processing it, the application has to do two things: produce the result to the output topic, and commit the offset of the message that we consumed. Suppose that these two separate actions happen in this order. What happens if the application crashes after the output was produced but before the offset of the input was committed?
 
 In Chapter 4, we discussed what happens when a consumer crashes. After a few seconds, the lack of heartbeat will trigger a rebalance, and the partitions the consumer was consuming from will be reassigned to a different consumer. That consumer will begin consuming records from those partitions, starting at the last committed offset. This means that all the records that were processed by the application between the last committed offset and the crash will be processed again, and the results will be written to the output topic again—resulting in duplicates.
 
-Reprocessing caused by zombie applications
+#### Reprocessing caused by zombie applications
 What happens if our application just consumed a batch of records from Kafka and then froze or lost connectivity to Kafka before doing anything else with this batch of records?
 
 Just like in the previous scenario, after several heartbeats are missed, the application will be assumed dead and its partitions reassigned to another consumer in the consumer group. That consumer will reread that batch of records, process it, produce the results to an output topic, and continue on.
@@ -123,7 +123,7 @@ Meanwhile, the first instance of the application—the one that froze—may resu
 
 A consumer that is dead but doesn’t know it is called a zombie. In this scenario, we can see that without additional guarantees, zombies can produce data to the output topic and cause duplicate results.
 
-How Do Transactions Guarantee Exactly-Once?
+## How Do Transactions Guarantee Exactly-Once?
 Take our simple stream processing application. It reads data from one topic, processes it, and writes the result to another topic. Exactly-once processing means that consuming, processing, and producing are done atomically. Either the offset of the original message is committed and the result is successfully produced or neither of these things happen. We need to make sure that partial results—where the offset is committed but the result isn’t produced, or vice versa—can’t happen.
 
 To support this behavior, Kafka transactions introduce the idea of atomic multipartition writes. The idea is that committing offsets and producing results both involve writing messages to partitions. However, the results are written to an output topic, and offsets are written to the _consumer_offsets topic. If we can open a transaction, write both messages, and commit if both were written successfully—or abort to retry if they were not—we will get the exactly-once semantics that we are after.
@@ -148,55 +148,58 @@ To guarantee that messages will be read in order, read_committed mode will not r
 
 Our simple stream processing job will have exactly-once guarantees on its output even if the input was written nontransactionally. The atomic multipartition produce guarantees that if the output records were committed to the output topic, the offset of the input records was also committed for that consumer, and as a result the input records will not be processed again.
 
-What Problems Aren’t Solved by Transactions?
+### What Problems Aren’t Solved by Transactions?
 As explained earlier, transactions were added to Kafka to provide multipartition atomic writes (but not reads) and to fence zombie producers in stream processing applications. As a result, they provide exactly-once guarantees when used within chains of consume-process-produce stream processing tasks. In other contexts, transactions will either straight-out not work or will require additional effort in order to achieve the guarantees we want.
 
 The two main mistakes are assuming that exactly-once guarantees apply on actions other than producing to Kafka, and that consumers always read entire transactions and have information about transaction boundaries.
 
 The following are a few scenarios in which Kafka transactions won’t help achieve exactly-once guarantees.
 
-Side effects while stream processing
+#### Side effects while stream processing
 Let’s say that the record processing step in our stream processing app includes sending email to users. Enabling exactly-once semantics in our app will not guarantee that the email will only be sent once. The guarantee only applies to records written to Kafka. Using sequence numbers to deduplicate records or using markers to abort or to cancel a transaction works within Kafka, but it will not un-send an email. The same is true for any action with external effects that is performed within the stream processing app: calling a REST API, writing to a file, etc.
 
-Reading from a Kafka topic and writing to a database
+#### Reading from a Kafka topic and writing to a database
 In this case, the application is writing to an external database rather than to Kafka. In this scenario, there is no producer involved—records are written to the database using a database driver (likely JDBC) and offsets are committed to Kafka within the consumer. There is no mechanism that allows writing results to an external database and committing offsets to Kafka within a single transaction. Instead, we could manage offsets in the database (as explained in Chapter 4) and commit both data and offsets to the database in a single transaction—this would rely on the database’s transactional guarantees rather than Kafka’s.
 
-NOTE
-Microservices often need to update the database and publish a message to Kafka within a single atomic transaction, so either both will happen or neither will. As we’ve just explained in the last two examples, Kafka transactions will not do this.
+> NOTE
+> Microservices often need to update the database and publish a message to Kafka within a single atomic > > > > transaction, so either both will happen or neither will. As we’ve just explained in the last two examples, > Kafka transactions will not do this.
 
-A common solution to this common problem is known as the outbox pattern. The microservice only publishes the message to a Kafka topic (the “outbox”), and a separate message relay service reads the event from Kafka and updates the database. Because, as we’ve just seen, Kafka won’t guarantee an exactly-once update to the database, it is important to make sure the update is idempotent.
+> A common solution to this common problem is known as the outbox pattern. The microservice only publishes > > the message to a Kafka topic (the “outbox”), and a separate message relay service reads the event from > > > Kafka and updates the database. Because, as we’ve just seen, Kafka won’t guarantee an exactly-once update > > to the database, it is important to make sure the update is idempotent.
 
-Using this pattern guarantees that the message will eventually make it to Kafka, the topic consumers, and the database—or to none of those.
+> Using this pattern guarantees that the message will eventually make it to Kafka, the topic consumers, and > > the database—or to none of those.
 
-The inverse pattern—where a database table serves as the outbox and a relay service makes sure updates to the table will also arrive to Kafka as messages—is also used. This pattern is preferred when built-in RDBMS constraints, such as uniqueness and foreign keys, are useful. The Debezium project published an in-depth blog post on the outbox pattern with detailed examples.
+> The inverse pattern—where a database table serves as the outbox and a relay service makes sure updates to > > the table will also arrive to Kafka as messages—is also used. This pattern is preferred when built-in RDBMS > constraints, such as uniqueness and foreign keys, are useful. The Debezium project published an in-depth > > blog post on the outbox pattern with detailed examples.
 
-Reading data from a database, writing to Kafka, and from there writing to another database
+#### Reading data from a database, writing to Kafka, and from there writing to another database
 It is very tempting to believe that we can build an app that will read data from a database, identify database transactions, write the records to Kafka, and from there write records to another database, still maintaining the original transactions from the source database.
 
 Unfortunately, Kafka transactions don’t have the necessary functionality to support these kinds of end-to-end guarantees. In addition to the problem with committing both records and offsets within the same transaction, there is another difficulty: read_committed guarantees in Kafka consumers are too weak to preserve database transactions. Yes, a consumer will not see records that were not committed. But it is not guaranteed to have seen all the records that were committed within the transaction because it could be lagging on some topics; it has no information to identify transaction boundaries, so it can’t know when a transaction began and ended, and whether it has seen some, none, or all of its records.
 
-Copying data from one Kafka cluster to another
+#### Copying data from one Kafka cluster to another
 This one is more subtle—it is possible to support exactly-once guarantees when copying data from one Kafka cluster to another. There is a description of how this is done in the Kafka improvement proposal for adding exactly-once capabilities in MirrorMaker 2.0. At the time of this writing, the proposal is still in draft, but the algorithm is clearly described. This proposal includes the guarantee that each record in the source cluster will be copied to the destination cluster exactly once.
 
 However, this does not guarantee that transactions will be atomic. If an app produces several records and offsets transactionally, and then MirrorMaker 2.0 copies them to another Kafka cluster, the transactional properties and guarantees will be lost during the copy process. They are lost for the same reason when copying data from Kafka to a relational database: the consumer reading data from Kafka can’t know or guarantee that it is getting all the events in a transaction. For example, it can replicate part of a transaction if it is only subscribed to a subset of the topics.
 
-Publish/subscribe pattern
+#### Publish/subscribe pattern
 Here’s a slightly more subtle case. We’ve discussed exactly-once in the context of the consume-process-produce pattern, but the publish/subscribe pattern is a very common use case. Using transactions in a publish/subscribe use case provides some guarantees: consumers configured with read_committed mode will not see records that were published as part of a transaction that was aborted. But those guarantees fall short of exactly-once. Consumers may process a message more than once, depending on their own offset commit logic.
 
 The guarantees Kafka provides in this case are similar to those provided by JMS transactions but depend on consumers in read_committed mode to guarantee that uncommitted transactions will remain invisible. JMS brokers withhold uncommitted transactions from all consumers.
 
-WARNING
-An important pattern to avoid is publishing a message and then waiting for another application to respond before committing the transaction. The other application will not receive the message until after the transaction was committed, resulting in a deadlock.
+>
+> WARNING
+> An important pattern to avoid is publishing a message and then waiting for another application to respond  before committing the transaction. The other application will not receive the message until after the transaction was committed, resulting in a deadlock.
+>
 
-How Do I Use Transactions?
+### How Do I Use Transactions?
 Transactions are a broker feature and part of the Kafka protocol, so there are multiple clients that support transactions.
 
 The most common and most recommended way to use transactions is to enable exactly-once guarantees in Kafka Streams. This way, we will not use transactions directly at all, but rather Kafka Streams will use them for us behind the scenes to provide the guarantees we need. Transactions were designed with this use case in mind, so using them via Kafka Streams is the easiest and most likely to work as expected.
 
 To enable exactly-once guarantees for a Kafka Streams application, we simply set the processing.guarantee configuration to either exactly_once or exactly_once_​beta. That’s it.
 
-NOTE
-exactly_once_beta is a slightly different method of handling application instances that crash or hang with in-flight transactions. This was introduced in release 2.5 to Kafka brokers, and in release 2.6 to Kafka Streams. The main benefit of this method is the ability to handle many partitions with a single transactional producer and therefore create more scalable Kafka Streams applications. There is more information about the changes in the Kafka improvement proposal where they were first discussed.
+> NOTE
+> `exactly_once_beta` is a slightly different method of handling application instances that crash or hang with > in-flight transactions. This was introduced in release 2.5 to Kafka brokers, and in release 2.6 to Kafka > Streams. The main benefit of this method is the ability to handle many partitions with a single transactional producer and therefore create more scalable Kafka Streams applications. There is more information about the changes in the [Kafka improvement proposal where they were first discussed](https://cwiki.apache.org/confluence/display/KAFKA/KIP-447%3A+Producer+scalability+for+exactly+once+semantics).
+>
 
 But what if we want exactly-once guarantees without using Kafka Streams? In this case we will use transactional APIs directly. Here’s a snippet showing how this will work. There is a full example in the Apache Kafka GitHub, which includes a demo driver and a simple exactly-once processor that runs in separate threads:
 
