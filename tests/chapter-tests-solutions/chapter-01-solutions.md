@@ -6,184 +6,184 @@
 
 ## Answer Key
 
-### 1. B) To act as a publish/subscribe messaging system
+## **Question 1**
 **Explanation:** Apache Kafka was designed as a publish/subscribe messaging system to handle data pipelines. It allows publishers to send messages and subscribers to receive them without direct coupling.
 
-### 2. B) An array of bytes
+## **Question 2**
 **Explanation:** In Kafka, a message is simply an array of bytes. Kafka doesn't impose any specific format or meaning on the message content.
 
-### 3. C) To control which partition the message is written to
+## **Question 3**
 **Explanation:** Message keys are used to determine which partition a message is written to. Messages with the same key are always written to the same partition (if partition count doesn't change).
 
-### 4. B) A collection of messages for the same topic and partition
+## **Question 4**
 **Explanation:** A batch is a collection of messages that are produced to the same topic and partition, written together for efficiency.
 
-### 5. A) To reduce network overhead
+## **Question 5**
 **Explanation:** Batching messages reduces network overhead by collecting multiple messages together instead of sending each one individually across the network.
 
-### 6. C) Apache Avro
+## **Question 6**
 **Explanation:** Apache Avro is the recommended serialization format. It provides compact serialization, schema separation from payloads, strong typing, and schema evolution with backward and forward compatibility.
 
-### 7. B) Schema evolution with backward and forward compatibility
+## **Question 7**
 **Explanation:** Avro provides robust schema evolution, allowing schemas to change over time while maintaining backward and forward compatibility.
 
-### 8. B) In topics and partitions
+## **Question 8**
 **Explanation:** Kafka organizes messages into topics, which are further divided into partitions for scalability and parallelism.
 
-### 9. B) A category for organizing messages
+## **Question 9**
 **Explanation:** A topic is a category or feed name to which messages are published. It's analogous to a database table or folder in a filesystem.
 
-### 10. B) A single log where messages are appended
+## **Question 10**
 **Explanation:** A partition is a single log where messages are written in an append-only fashion and read in order from beginning to end.
 
-### 11. B) No, only within a single partition
+## **Question 11**
 **Explanation:** Message ordering is guaranteed only within a single partition, not across all partitions in a topic.
 
-### 12. B) To enable horizontal scalability
+## **Question 12**
 **Explanation:** Multiple partitions allow a topic to be scaled horizontally across multiple servers, providing performance beyond what a single server can deliver.
 
-### 13. B) An application that creates new messages
+## **Question 13**
 **Explanation:** Producers are client applications that create and publish new messages to Kafka topics.
 
-### 14. B) An application that reads messages
+## **Question 14**
 **Explanation:** Consumers are client applications that subscribe to topics and read messages in the order they were produced.
 
-### 15. C) An integer value indicating the consumer's position in the partition
+## **Question 15**
 **Explanation:** The offset is an integer value that continually increases and indicates which messages the consumer has already consumed.
 
-### 16. C) In Kafka itself
+## **Question 16**
 **Explanation:** Consumer offsets are typically stored in Kafka itself, allowing consumers to stop and restart without losing their place.
 
-### 17. B) One or more consumers working together to consume a topic
+## **Question 17**
 **Explanation:** A consumer group consists of one or more consumers that work together to consume a topic, ensuring that each partition is consumed by only one member.
 
-### 18. B) Only one consumer
+## **Question 18**
 **Explanation:** In a consumer group, each partition is consumed by only one consumer at a time. This is called ownership of the partition.
 
-### 19. B) A single Kafka server
+## **Question 19**
 **Explanation:** A broker is a single Kafka server that receives messages from producers and serves consumers.
 
-### 20. B) It assigns partitions to brokers and monitors for broker failures
+## **Question 20**
 **Explanation:** The cluster controller is responsible for administrative operations including partition assignment and monitoring broker health.
 
-### 21. B) The broker that owns a partition and handles reads/writes
+## **Question 21**
 **Explanation:** The partition leader is the broker that owns a specific partition and handles all reads and writes for that partition.
 
-### 22. B) To provide redundancy by replicating the leader's data
+## **Question 22**
 **Explanation:** Partition followers replicate the leader's data to provide redundancy, allowing them to take over if the leader fails.
 
-### 23. B) The durable storage of messages for a period of time
+## **Question 23**
 **Explanation:** Retention is the durable storage of messages in Kafka for a configured period of time or until a size limit is reached.
 
-### 24. C) By time period or partition size
+## **Question 24**
 **Explanation:** Retention can be configured either by time period (e.g., 7 days) or by partition size (e.g., 1 GB).
 
-### 25. B) Retaining only the last message with a specific key
+## **Question 25**
 **Explanation:** Log compaction means Kafka retains only the last message produced with a specific key, useful for changelog-type data.
 
-### 26. B) For data segregation, security isolation, and disaster recovery
+## **Question 26**
 **Explanation:** Multiple clusters are used for segregating data types, isolating security requirements, and supporting multiple datacenters for disaster recovery.
 
-### 27. B) To replicate data between Kafka clusters
+## **Question 27**
 **Explanation:** MirrorMaker is a tool used for replicating data from one Kafka cluster to another.
 
-### 28. B) By using a Kafka consumer and producer linked together
+## **Question 28**
 **Explanation:** MirrorMaker works by consuming messages from one cluster and producing them to another cluster.
 
-### 29. B) Kafka can seamlessly handle multiple producers
+## **Question 29**
 **Explanation:** Kafka can handle multiple producers simultaneously, whether they're using many topics or the same topic.
 
-### 30. B) Multiple consumers can read without interfering with each other
+## **Question 30**
 **Explanation:** Kafka is designed for multiple consumers to read any single stream of messages without interfering with each other.
 
-### 31. B) Consumers can fall behind without losing data
+## **Question 31**
 **Explanation:** Disk-based retention means consumers can fall behind in processing without losing data, as messages are durably stored.
 
-### 32. B) The remaining members reassign the partitions
+## **Question 32**
 **Explanation:** If a consumer fails, the remaining members of the consumer group will reassign the partitions to take over for the missing member.
 
-### 33. B) Flexible scalability from single broker to hundreds of brokers
+## **Question 33**
 **Explanation:** Kafka offers flexible scalability, allowing systems to start with a single broker and expand to hundreds of brokers as needed.
 
-### 34. B) Yes, with no impact on availability
+## **Question 34**
 **Explanation:** Kafka clusters can be expanded while online with no impact on the overall system availability.
 
-### 35. B) An API for pulling/pushing data from/to source and sink systems
+## **Question 35**
 **Explanation:** Kafka Connect is an API that assists with pulling data from source systems into Kafka and pushing data from Kafka to sink systems.
 
-### 36. B) A library for stream processing applications
+## **Question 36**
 **Explanation:** Kafka Streams provides a library for developing scalable and fault-tolerant stream processing applications.
 
-### 37. B) As the circulatory system carrying messages between components
+## **Question 37**
 **Explanation:** Kafka provides the circulatory system for the data ecosystem, carrying messages between various infrastructure components.
 
-### 38. B) User activity tracking
+## **Question 38**
 **Explanation:** The original use case for Kafka at LinkedIn was user activity tracking on their website.
 
-### 39. B) Publish/subscribe (pub/sub)
+## **Question 39**
 **Explanation:** Kafka uses the publish/subscribe messaging pattern where publishers send messages and subscribers receive them.
 
-### 40. B) The sender of messages
+## **Question 40**
 **Explanation:** In pub/sub messaging, the publisher is the sender or producer of messages.
 
-### 41. B) To act as a central point where messages are published
+## **Question 41**
 **Explanation:** The broker serves as a central point where messages are published and from which subscribers can receive them.
 
-### 42. B) Creating a unified platform for metrics and activity tracking
+## **Question 42**
 **Explanation:** Kafka solved LinkedIn's problem of having fragmented systems for metrics collection and user activity tracking.
 
-### 43. B) Decouple producers/consumers, provide persistence, optimize throughput, allow horizontal scaling
+## **Question 43**
 **Explanation:** Kafka was designed to decouple producers and consumers, provide message persistence, optimize for high throughput, and allow horizontal scaling.
 
-### 44. B) A durable, ordered record of transactions distributed across servers
+## **Question 44**
 **Explanation:** A distributed commit log is a durable, ordered record of all transactions that can be replayed and is distributed across multiple servers.
 
-### 45. C) Late 2010
+## **Question 45**
 **Explanation:** Kafka was released as an open source project on GitHub in late 2010.
 
-### 46. B) October 2012
+## **Question 46**
 **Explanation:** Apache Kafka graduated from the Apache incubator in October 2012.
 
-### 47. B) Jay Kreps, Neha Narkhede, and Jun Rao
+## **Question 47**
 **Explanation:** Confluent was founded by Jay Kreps, Neha Narkhede, and Jun Rao in the fall of 2014.
 
-### 48. C) LinkedIn
+## **Question 48**
 **Explanation:** Apache Kafka was originally developed at LinkedIn to solve their data pipeline challenges.
 
-### 49. B) A single topic of data regardless of partition count
+## **Question 49**
 **Explanation:** A stream is considered to be a single topic of data, regardless of how many partitions it has.
 
-### 50. B) Messages are ordered within a partition
+## **Question 50**
 **Explanation:** Messages are written and read in order within a single partition, ensuring ordering at the partition level.
 
-### 51. B) By scaling producers, consumers, and brokers to handle large message streams
+## **Question 51**
 **Explanation:** Kafka achieves high performance by allowing all components (producers, consumers, and brokers) to scale out to handle very large message streams.
 
-### 52. A) Higher latency but better throughput
+## **Question 52**
 **Explanation:** Larger batches provide better throughput (more messages per unit time) but at the cost of higher latency (longer propagation time for individual messages).
 
-### 53. B) To decouple writing and reading messages
+## **Question 53**
 **Explanation:** Schemas allow writing and reading messages to be decoupled, as messages can be understood without tight coordination between producers and consumers.
 
-### 54. B) Additional brokers store copies for redundancy
+## **Question 54**
 **Explanation:** When a partition is replicated, additional brokers (followers) store copies of the partition's data for redundancy and fault tolerance.
 
-### 55. B) To the partition leader
+## **Question 55**
 **Explanation:** Producers must connect to the partition leader to publish messages, as only the leader handles writes.
 
-### 56. B) Yes, consumers may fetch from leader or followers
+## **Question 56**
 **Explanation:** Consumers can fetch messages from either the partition leader or one of the followers.
 
-### 57. B) Activity tracking, messaging, metrics and logging, stream processing
+## **Question 57**
 **Explanation:** The chapter mentions multiple use cases including activity tracking, messaging, metrics and logging, commit logs, and stream processing.
 
-### 58. B) Fragmented systems for metrics and activity tracking with poor scalability
+## **Question 58**
 **Explanation:** Before Kafka, LinkedIn had fragmented, poorly scalable systems for collecting metrics and tracking user activity.
 
-### 59. B) XML
+## **Question 59**
 **Explanation:** LinkedIn originally used XML format for activity tracking, which was computationally expensive to parse and had inconsistent formatting.
 
-### 60. B) Kafka was a writer, and the system is optimized for writing
+## **Question 60**
 **Explanation:** Jay Kreps named it after Franz Kafka because he thought using a writer's name made sense for a system optimized for writing. He also mentioned the name sounded cool for an open source project.
 
 ---
