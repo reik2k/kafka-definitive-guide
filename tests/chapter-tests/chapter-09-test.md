@@ -608,4 +608,4 @@ What is the benefit of preserving schema in pipelines?
 
 **Total Questions:** 60
 
-**Good luck with your CCDAK preparation!**
+**Good luck with your CCDAK preparation!**7
