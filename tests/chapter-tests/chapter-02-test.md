@@ -4,7 +4,7 @@
 **Time Limit: 90 minutes**  
 **Passing Score: 70%**
 
-[View Solutions](../solutions/chapter-tests/chapter-02-solutions.md)
+[View Solutions](../chapter-tests-solutions/chapter-02-solutions.md)
 
 ---
 
@@ -381,7 +381,7 @@ D) It is replicated
 ---
 
 ## Answer Key
-[View detailed solutions and explanations](../solutions/chapter-tests/chapter-02-solutions.md)
+[View detailed solutions and explanations](../chapter-tests-solutions/chapter-02-solutions.md)
 
 ---
 
