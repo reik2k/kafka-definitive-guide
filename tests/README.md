@@ -35,20 +35,20 @@ This directory contains comprehensive practice tests designed to help you prepar
 ### Chapter Tests
 Each chapter test contains questions specific to that chapter's content:
 
-- [Chapter 1: Meet Kafka](./chapter-tests/chapter-01-meet-kafka.md)
-- [Chapter 2: Installing Kafka](./chapter-tests/chapter-02-installing-kafka.md)
-- [Chapter 3: Kafka Producers](./chapter-tests/chapter-03-kafka-producers.md)
-- [Chapter 4: Kafka Consumers](./chapter-tests/chapter-04-kafka-consumers.md)
-- [Chapter 5: Managing Apache Kafka Programmatically](./chapter-tests/chapter-05-managing-kafka.md)
-- [Chapter 6: Kafka Internals](./chapter-tests/chapter-06-kafka-internals.md)
-- [Chapter 7: Reliable Data Delivery](./chapter-tests/chapter-07-reliable-data-delivery.md)
-- [Chapter 8: Exactly-Once Semantics](./chapter-tests/chapter-08-exactly-once-semantics.md)
-- [Chapter 9: Building Data Pipelines](./chapter-tests/chapter-09-building-data-pipelines.md)
-- [Chapter 10: Cross-Cluster Data Mirroring](./chapter-tests/chapter-10-cross-cluster-mirroring.md)
-- [Chapter 11: Securing Kafka](./chapter-tests/chapter-11-securing-kafka.md)
-- [Chapter 12: Administering Kafka](./chapter-tests/chapter-12-administering-kafka.md)
-- [Chapter 13: Monitoring Kafka](./chapter-tests/chapter-13-monitoring-kafka.md)
-- [Chapter 14: Stream Processing](./chapter-tests/chapter-14-stream-processing.md)
+- [Chapter 1: Meet Kafka](./chapter-tests/chapter-01-test.md)
+- [Chapter 2: Installing Kafka](./chapter-tests/chapter-02-test.md)
+- [Chapter 3: Kafka Producers](./chapter-tests/chapter-03-test.md)
+- [Chapter 4: Kafka Consumers](./chapter-tests/chapter-04-test.md)
+- [Chapter 5: Managing Apache Kafka Programmatically](./chapter-tests/chapter-05-test.md)
+- [Chapter 6: Kafka Internals](./chapter-tests/chapter-06-test.md)
+- [Chapter 7: Reliable Data Delivery](./chapter-tests/chapter-07-test.md)
+- [Chapter 8: Exactly-Once Semantics](./chapter-tests/chapter-08-test.md)
+- [Chapter 9: Building Data Pipelines](./chapter-tests/chapter-09-test.md)
+- [Chapter 10: Cross-Cluster Data Mirroring](./chapter-tests/chapter-10-test.md)
+- [Chapter 11: Securing Kafka](./chapter-tests/chapter-11-test.md)
+- [Chapter 12: Administering Kafka](./chapter-tests/chapter-12-test.md)
+- [Chapter 13: Monitoring Kafka](./chapter-tests/chapter-13-test.md)
+- [Chapter 14: Stream Processing](./chapter-tests/chapter-14-test.md)
 
 ### Mixed Practice Tests
 These tests combine questions from all chapters to simulate the actual exam:
@@ -65,12 +65,6 @@ These tests combine questions from all chapters to simulate the actual exam:
 2. **Take Mixed Tests**: Once comfortable, take the full-length mixed tests under exam conditions
 3. **Review Solutions**: All answers include detailed explanations in the solutions folder
 4. **Track Progress**: Keep notes on areas where you need more study
-
-## Solutions
-
-Detailed solutions with explanations are available in:
-- [Chapter Test Solutions](./solutions/chapter-tests/)
-- [Mixed Test Solutions](./solutions/mixed-tests/)
 
 ## Study Tips
 

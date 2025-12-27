@@ -1,11 +1,27 @@
 # Chapter 08 – Exactly-Once Semantics – CCDAK Practice Test
 
-> **60 Questions** | Related to Apache Kafka Exactly-Once Semantics (EOS), Idempotent Producers, and Transactions
+**Based on:** Kafka: The Definitive Guide, 2nd Edition, Chapter 8
+
+**CCDAK Practice Test - 60 Questions**
+**Time Limit: 90 minutes**  
+**Passing Score: 70%**
+
+[Link to Solutions](../../chapter-tests-solutions/chapter-08-solutions.md) | [Main README](../../README.md)
 
 ---
 
-## Question 1
-Which guarantee does the idempotent producer add beyond the standard at-least-once delivery?
+## Instructions
+- This test follows the Confluent Certified Developer for Apache Kafka (CCDAK) exam format
+- Each question has multiple choice answers
+- Select the best answer for each question
+- Some questions may have multiple correct answers
+
+---
+
+### Question 1
+
+**Which guarantee does the idempotent producer add beyond the standard at-least-once delivery?**
+
 
 - A. Messages are delivered in random order but without duplicates
 - B. Messages are delivered exactly once to consumers without any duplicates in topics
@@ -14,8 +30,10 @@ Which guarantee does the idempotent producer add beyond the standard at-least-on
 
 ---
 
-## Question 2
-Which configuration enables the idempotent producer in modern Kafka clients?
+### Question 2
+
+**Which configuration enables the idempotent producer in modern Kafka clients?**
+
 
 - A. `enable.idempotent=true`
 - B. `enable.idempotence=true`
@@ -24,8 +42,10 @@ Which configuration enables the idempotent producer in modern Kafka clients?
 
 ---
 
-## Question 3
-Which three conditions are required for the idempotent producer to function correctly?
+### Question 3
+
+**Which three conditions are required for the idempotent producer to function correctly?**
+
 
 - A. `acks=all`, `retries > 0`, `max.in.flight.requests.per.connection <= 5`
 - B. `acks=1`, `retries=0`, `enable.auto.commit=false`
@@ -34,8 +54,10 @@ Which three conditions are required for the idempotent producer to function corr
 
 ---
 
-## Question 4
-What is the main purpose of a Producer ID (PID) in Kafka?
+### Question 4
+
+**What is the main purpose of a Producer ID (PID) in Kafka?**
+
 
 - A. To identify partitions uniquely
 - B. To identify a producer instance to enable deduplication of records
@@ -44,8 +66,10 @@ What is the main purpose of a Producer ID (PID) in Kafka?
 
 ---
 
-## Question 5
-Which component is responsible for maintaining the state of a transaction in Kafka?
+### Question 5
+
+**Which component is responsible for maintaining the state of a transaction in Kafka?**
+
 
 - A. Group coordinator
 - B. Controller broker
@@ -54,8 +78,10 @@ Which component is responsible for maintaining the state of a transaction in Kaf
 
 ---
 
-## Question 6
-What is the role of a transactional ID in a Kafka application?
+### Question 6
+
+**What is the role of a transactional ID in a Kafka application?**
+
 
 - A. It identifies a consumer group
 - B. It identifies a set of partitions that the producer writes to
@@ -64,8 +90,10 @@ What is the role of a transactional ID in a Kafka application?
 
 ---
 
-## Question 7
-In an exactly-once processing pipeline using Kafka Streams, which isolation level do consuming applications typically rely on?
+### Question 7
+
+**In an exactly-once processing pipeline using Kafka Streams, which isolation level do consuming applications typically rely on?**
+
 
 - A. `read_uncommitted`
 - B. `read_committed`
@@ -74,8 +102,10 @@ In an exactly-once processing pipeline using Kafka Streams, which isolation leve
 
 ---
 
-## Question 8
-What does the `read_committed` isolation level guarantee for consumers?
+### Question 8
+
+**What does the `read_committed` isolation level guarantee for consumers?**
+
 
 - A. Consumers can see both committed and uncommitted transactional messages
 - B. Consumers see only committed records from successful transactions and non-transactional records
@@ -84,8 +114,10 @@ What does the `read_committed` isolation level guarantee for consumers?
 
 ---
 
-## Question 9
-Which of the following is required to achieve end-to-end exactly-once semantics with Kafka Streams in a read-process-write topology?
+### Question 9
+
+**Which of the following is required to achieve end-to-end exactly-once semantics with Kafka Streams in a read-process-write topology?**
+
 
 - A. Idempotent producers only
 - B. Transactions spanning input reads, processing, and output writes
@@ -94,8 +126,10 @@ Which of the following is required to achieve end-to-end exactly-once semantics 
 
 ---
 
-## Question 10
-Which of the following best describes the phrase "read-process-write as a single atomic operation" in Kafka Streams?
+### Question 10
+
+**Which of the following best describes the phrase "read-process-write as a single atomic operation" in Kafka Streams?**
+
 
 - A. The input read, state update, and output write occur in the same thread
 - B. The input read, state update, and output write are performed within a single Kafka transaction
@@ -104,8 +138,10 @@ Which of the following best describes the phrase "read-process-write as a single
 
 ---
 
-## Question 11
-Which configuration is essential for a Kafka consumer to avoid seeing uncommitted transactional messages?
+### Question 11
+
+**Which configuration is essential for a Kafka consumer to avoid seeing uncommitted transactional messages?**
+
 
 - A. `enable.auto.commit=false`
 - B. `isolation.level=read_committed`
@@ -114,8 +150,10 @@ Which configuration is essential for a Kafka consumer to avoid seeing uncommitte
 
 ---
 
-## Question 12
-What happens to messages in an aborted transaction when a consumer uses `read_committed`?
+### Question 12
+
+**What happens to messages in an aborted transaction when a consumer uses `read_committed`?**
+
 
 - A. They are delivered but marked as aborted
 - B. They are skipped and never returned to the consumer
@@ -124,8 +162,10 @@ What happens to messages in an aborted transaction when a consumer uses `read_co
 
 ---
 
-## Question 13
-Which Kafka feature is required to provide exactly-once semantics for a transactional producer?
+### Question 13
+
+**Which Kafka feature is required to provide exactly-once semantics for a transactional producer?**
+
 
 - A. Log compaction
 - B. Idempotent producer and transactions
@@ -134,8 +174,10 @@ Which Kafka feature is required to provide exactly-once semantics for a transact
 
 ---
 
-## Question 14
-In a transactional application, what is the purpose of `initTransactions()` in the producer?
+### Question 14
+
+**In a transactional application, what is the purpose of `initTransactions()` in the producer?**
+
 
 - A. It starts the transaction and sends the first message
 - B. It registers the transactional ID and obtains a PID from the transaction coordinator
@@ -144,8 +186,10 @@ In a transactional application, what is the purpose of `initTransactions()` in t
 
 ---
 
-## Question 15
-What is the purpose of calling `beginTransaction()` on a Kafka producer?
+### Question 15
+
+**What is the purpose of calling `beginTransaction()` on a Kafka producer?**
+
 
 - A. To register the producer with the broker
 - B. To start a new transaction scope for subsequent send operations
@@ -154,8 +198,10 @@ What is the purpose of calling `beginTransaction()` on a Kafka producer?
 
 ---
 
-## Question 16
-Which method must be used to include consumer offsets within a transaction?
+### Question 16
+
+**Which method must be used to include consumer offsets within a transaction?**
+
 
 - A. `commitSync()`
 - B. `commitAsync()`
@@ -164,8 +210,10 @@ Which method must be used to include consumer offsets within a transaction?
 
 ---
 
-## Question 17
-What is the main benefit of including offsets in the same transaction as output records?
+### Question 17
+
+**What is the main benefit of including offsets in the same transaction as output records?**
+
 
 - A. It reduces network overhead
 - B. It provides atomicity between output data and offset commits
@@ -174,8 +222,10 @@ What is the main benefit of including offsets in the same transaction as output 
 
 ---
 
-## Question 18
-When a transaction is committed, what happens to the records written as part of that transaction?
+### Question 18
+
+**When a transaction is committed, what happens to the records written as part of that transaction?**
+
 
 - A. They are visible only to the producer
 - B. They become visible to `read_uncommitted` consumers only
@@ -184,8 +234,10 @@ When a transaction is committed, what happens to the records written as part of 
 
 ---
 
-## Question 19
-What happens if a producer fails after writing records but before committing the transaction?
+### Question 19
+
+**What happens if a producer fails after writing records but before committing the transaction?**
+
 
 - A. The records are immediately visible to all consumers
 - B. The transaction is automatically committed
@@ -194,8 +246,10 @@ What happens if a producer fails after writing records but before committing the
 
 ---
 
-## Question 20
-Which of the following is a limitation of exactly-once semantics in Kafka?
+### Question 20
+
+**Which of the following is a limitation of exactly-once semantics in Kafka?**
+
 
 - A. It only works for compacted topics
 - B. It does not cover external systems outside Kafka unless they are integrated transactionally
@@ -204,8 +258,10 @@ Which of the following is a limitation of exactly-once semantics in Kafka?
 
 ---
 
-## Question 21
-In an application reading from Kafka, processing, then writing back to Kafka, which pattern is unsafe for exactly-once semantics?
+### Question 21
+
+**In an application reading from Kafka, processing, then writing back to Kafka, which pattern is unsafe for exactly-once semantics?**
+
 
 - A. Read, process, write, then commit offsets transactionally
 - B. Read, process, commit offsets, then write output
@@ -214,8 +270,10 @@ In an application reading from Kafka, processing, then writing back to Kafka, wh
 
 ---
 
-## Question 22
-What is the impact of setting `enable.idempotence=true` without using transactions?
+### Question 22
+
+**What is the impact of setting `enable.idempotence=true` without using transactions?**
+
 
 - A. You get end-to-end exactly-once semantics automatically
 - B. You get producer-side deduplication, but consumer offset handling can still be at-least-once
@@ -224,8 +282,10 @@ What is the impact of setting `enable.idempotence=true` without using transactio
 
 ---
 
-## Question 23
-Which internal topic is used by Kafka Streams to support EOS and state management?
+### Question 23
+
+**Which internal topic is used by Kafka Streams to support EOS and state management?**
+
 
 - A. `__consumer_offsets`
 - B. `__transaction_state`
@@ -234,8 +294,10 @@ Which internal topic is used by Kafka Streams to support EOS and state managemen
 
 ---
 
-## Question 24
-In Kafka Streams, which configuration enables exactly-once semantics?
+### Question 24
+
+**In Kafka Streams, which configuration enables exactly-once semantics?**
+
 
 - A. `processing.guarantee=exactly_once_v2` (or `exactly_once_beta` in older versions)
 - B. `enable.idempotence=true`
@@ -244,8 +306,10 @@ In Kafka Streams, which configuration enables exactly-once semantics?
 
 ---
 
-## Question 25
-What is the main difference between `at_least_once` and `exactly_once` processing guarantees in Kafka Streams?
+### Question 25
+
+**What is the main difference between `at_least_once` and `exactly_once` processing guarantees in Kafka Streams?**
+
 
 - A. `at_least_once` requires transactions; `exactly_once` does not
 - B. `at_least_once` may produce duplicates on failures; `exactly_once` avoids duplicates even after failures
@@ -254,8 +318,10 @@ What is the main difference between `at_least_once` and `exactly_once` processin
 
 ---
 
-## Question 26
-Why might exactly-once processing have higher overhead than at-least-once?
+### Question 26
+
+**Why might exactly-once processing have higher overhead than at-least-once?**
+
 
 - A. Requires more replication
 - B. Requires transactional coordination, additional IO, and more metadata
@@ -264,8 +330,10 @@ Why might exactly-once processing have higher overhead than at-least-once?
 
 ---
 
-## Question 27
-In Kafka, where are transactional metadata and status stored?
+### Question 27
+
+**In Kafka, where are transactional metadata and status stored?**
+
 
 - A. In ZooKeeper
 - B. In the controller's memory only
@@ -274,8 +342,10 @@ In Kafka, where are transactional metadata and status stored?
 
 ---
 
-## Question 28
-What is a typical symptom if `max.in.flight.requests.per.connection` is set too high with idempotent producers?
+### Question 28
+
+**What is a typical symptom if `max.in.flight.requests.per.connection` is set too high with idempotent producers?**
+
 
 - A. Increased throughput but also possible reordering and duplicates
 - B. Reduced throughput but guaranteed ordering
@@ -284,8 +354,10 @@ What is a typical symptom if `max.in.flight.requests.per.connection` is set too 
 
 ---
 
-## Question 29
-Which of the following is true about idempotent producers and partitions?
+### Question 29
+
+**Which of the following is true about idempotent producers and partitions?**
+
 
 - A. The producer sequence numbers are tracked per topic
 - B. The producer sequence numbers are tracked per producer only
@@ -294,8 +366,10 @@ Which of the following is true about idempotent producers and partitions?
 
 ---
 
-## Question 30
-In a transactional producer, what is the effect of `abortTransaction()`?
+### Question 30
+
+**In a transactional producer, what is the effect of `abortTransaction()`?**
+
 
 - A. It rolls back the current transaction, making all messages invisible to `read_committed` consumers
 - B. It commits the current transaction
@@ -304,8 +378,10 @@ In a transactional producer, what is the effect of `abortTransaction()`?
 
 ---
 
-## Question 31
-Why is it recommended to use a stable transactional ID across restarts of the same application instance?
+### Question 31
+
+**Why is it recommended to use a stable transactional ID across restarts of the same application instance?**
+
 
 - A. To reuse the same PID and allow fencing of older producers
 - B. To enable log compaction
@@ -314,8 +390,10 @@ Why is it recommended to use a stable transactional ID across restarts of the sa
 
 ---
 
-## Question 32
-What is producer fencing in Kafka?
+### Question 32
+
+**What is producer fencing in Kafka?**
+
 
 - A. Preventing producers from writing to unauthorized topics
 - B. Preventing an older producer instance with the same transactional ID from continuing to write after a newer instance starts
@@ -324,8 +402,10 @@ What is producer fencing in Kafka?
 
 ---
 
-## Question 33
-Which behavior occurs when an older fenced producer attempts to continue using a transactional ID?
+### Question 33
+
+**Which behavior occurs when an older fenced producer attempts to continue using a transactional ID?**
+
 
 - A. Its writes are accepted but flagged
 - B. The broker drops its requests and raises errors
@@ -334,8 +414,10 @@ Which behavior occurs when an older fenced producer attempts to continue using a
 
 ---
 
-## Question 34
-In a Kafka Streams application with EOS, what happens if a task crashes in the middle of processing a batch?
+### Question 34
+
+**In a Kafka Streams application with EOS, what happens if a task crashes in the middle of processing a batch?**
+
 
 - A. Partial output may be visible
 - B. No output or offset commits from the failed transaction become visible; the task is restarted and reprocesses from the last committed position
@@ -344,8 +426,10 @@ In a Kafka Streams application with EOS, what happens if a task crashes in the m
 
 ---
 
-## Question 35
-Which of the following guarantees does Kafka NOT provide, even with EOS?
+### Question 35
+
+**Which of the following guarantees does Kafka NOT provide, even with EOS?**
+
 
 - A. Exactly-once processing across Kafka and an external database without special integration
 - B. Exactly-once processing within Kafka Streams
@@ -354,8 +438,10 @@ Which of the following guarantees does Kafka NOT provide, even with EOS?
 
 ---
 
-## Question 36
-When using `read_committed`, how does a consumer treat records from ongoing (uncommitted) transactions?
+### Question 36
+
+**When using `read_committed`, how does a consumer treat records from ongoing (uncommitted) transactions?**
+
 
 - A. They are returned but marked as pending
 - B. They are buffered but not returned until commit or abort is known
@@ -364,8 +450,10 @@ When using `read_committed`, how does a consumer treat records from ongoing (unc
 
 ---
 
-## Question 37
-Which configuration is necessary for Kafka Streams to use transactions under the `exactly_once` guarantee?
+### Question 37
+
+**Which configuration is necessary for Kafka Streams to use transactions under the `exactly_once` guarantee?**
+
 
 - A. `processing.guarantee=at_least_once`
 - B. `processing.guarantee=exactly_once_v2` and a valid `application.id`
@@ -374,8 +462,10 @@ Which configuration is necessary for Kafka Streams to use transactions under the
 
 ---
 
-## Question 38
-In a manual producer–consumer application (not Kafka Streams), which sequence ensures EOS between reading from one topic and writing to another?
+### Question 38
+
+**In a manual producer–consumer application (not Kafka Streams), which sequence ensures EOS between reading from one topic and writing to another?**
+
 
 - A. `poll()`, process, `send()`, then `commitSync()`
 - B. `beginTransaction()`, `poll()`, process, `send()` outputs, `sendOffsetsToTransaction()`, `commitTransaction()`
@@ -384,8 +474,10 @@ In a manual producer–consumer application (not Kafka Streams), which sequence 
 
 ---
 
-## Question 39
-What happens if `sendOffsetsToTransaction()` is not called in a transactional application?
+### Question 39
+
+**What happens if `sendOffsetsToTransaction()` is not called in a transactional application?**
+
 
 - A. Offsets are still committed atomically
 - B. Offsets and outputs may become inconsistent in case of failures
@@ -394,8 +486,10 @@ What happens if `sendOffsetsToTransaction()` is not called in a transactional ap
 
 ---
 
-## Question 40
-Why is it important that `acks=all` is used with idempotent producers?
+### Question 40
+
+**Why is it important that `acks=all` is used with idempotent producers?**
+
 
 - A. To ensure low latency
 - B. To ensure the leader broker alone acknowledges writes
@@ -404,8 +498,10 @@ Why is it important that `acks=all` is used with idempotent producers?
 
 ---
 
-## Question 41
-Which guarantee does Kafka's EOS rely on to preserve ordering?
+### Question 41
+
+**Which guarantee does Kafka's EOS rely on to preserve ordering?**
+
 
 - A. Global ordering across all partitions
 - B. Ordering within a partition
@@ -414,8 +510,10 @@ Which guarantee does Kafka's EOS rely on to preserve ordering?
 
 ---
 
-## Question 42
-A CCDAK-style scenario describes a microservice that consumes from topic A, updates a state store, and produces to topic B using Kafka Streams EOS. Which statement is correct?
+### Question 42
+
+**A CCDAK-style scenario describes a microservice that consumes from topic A, updates a state store, and produces to topic B using Kafka Streams EOS. Which statement is correct?**
+
 
 - A. Duplicates may still occur on topic B
 - B. The state store and outputs are updated atomically per transaction
@@ -424,8 +522,10 @@ A CCDAK-style scenario describes a microservice that consumes from topic A, upda
 
 ---
 
-## Question 43
-Which API is most convenient for implementing EOS without manually managing transactions?
+### Question 43
+
+**Which API is most convenient for implementing EOS without manually managing transactions?**
+
 
 - A. The plain Java consumer API
 - B. The AdminClient API
@@ -434,8 +534,10 @@ Which API is most convenient for implementing EOS without manually managing tran
 
 ---
 
-## Question 44
-In the context of CCDAK, which use case is a typical motivation for exactly-once semantics?
+### Question 44
+
+**In the context of CCDAK, which use case is a typical motivation for exactly-once semantics?**
+
 
 - A. Logging debug events
 - B. Financial transaction processing
@@ -444,8 +546,10 @@ In the context of CCDAK, which use case is a typical motivation for exactly-once
 
 ---
 
-## Question 45
-What is a potential downside of enabling EOS in Kafka Streams?
+### Question 45
+
+**What is a potential downside of enabling EOS in Kafka Streams?**
+
 
 - A. State stores are no longer supported
 - B. Higher latency and overhead due to transactional commits
@@ -454,8 +558,10 @@ What is a potential downside of enabling EOS in Kafka Streams?
 
 ---
 
-## Question 46
-How does Kafka deduplicate messages from an idempotent producer at the broker?
+### Question 46
+
+**How does Kafka deduplicate messages from an idempotent producer at the broker?**
+
 
 - A. By checking the message key only
 - B. By using a combination of PID, partition, and sequence number
@@ -464,8 +570,10 @@ How does Kafka deduplicate messages from an idempotent producer at the broker?
 
 ---
 
-## Question 47
-Which of the following best describes "transactional.id" configuration on a producer?
+### Question 47
+
+**Which of the following best describes "transactional.id" configuration on a producer?**
+
 
 - A. Identifies the cluster
 - B. Identifies the topic
@@ -474,8 +582,10 @@ Which of the following best describes "transactional.id" configuration on a prod
 
 ---
 
-## Question 48
-What is the recommended action if a transactional producer receives a fatal error like `ProducerFencedException`?
+### Question 48
+
+**What is the recommended action if a transactional producer receives a fatal error like `ProducerFencedException`?**
+
 
 - A. Ignore and continue sending messages
 - B. Retry the same transaction with the same producer
@@ -484,8 +594,10 @@ What is the recommended action if a transactional producer receives a fatal erro
 
 ---
 
-## Question 49
-Which of the following is true about non-transactional producers and EOS?
+### Question 49
+
+**Which of the following is true about non-transactional producers and EOS?**
+
 
 - A. They can still be exactly-once when combined with external coordination
 - B. They automatically provide EOS for reads and writes in Kafka Streams
@@ -494,8 +606,10 @@ Which of the following is true about non-transactional producers and EOS?
 
 ---
 
-## Question 50
-For CCDAK, which of the following best characterizes the relationship between idempotence and transactions?
+### Question 50
+
+**For CCDAK, which of the following best characterizes the relationship between idempotence and transactions?**
+
 
 - A. Transactions depend on idempotence; idempotence is a building block for EOS
 - B. Idempotence depends on transactions
@@ -504,8 +618,10 @@ For CCDAK, which of the following best characterizes the relationship between id
 
 ---
 
-## Question 51
-What is the effect of setting `processing.guarantee=exactly_once_v2` compared to `at_least_once` in Kafka Streams?
+### Question 51
+
+**What is the effect of setting `processing.guarantee=exactly_once_v2` compared to `at_least_once` in Kafka Streams?**
+
 
 - A. Offsets are committed more frequently
 - B. Streams uses transactions and idempotent producers to guarantee EOS
@@ -514,8 +630,10 @@ What is the effect of setting `processing.guarantee=exactly_once_v2` compared to
 
 ---
 
-## Question 52
-In Kafka Streams EOS, how are offsets committed?
+### Question 52
+
+**In Kafka Streams EOS, how are offsets committed?**
+
 
 - A. Through `commitSync()` on the underlying consumer
 - B. As part of the transaction to the `__consumer_offsets` topic
@@ -524,8 +642,10 @@ In Kafka Streams EOS, how are offsets committed?
 
 ---
 
-## Question 53
-What does the transaction coordinator use to time out long-running or stuck transactions?
+### Question 53
+
+**What does the transaction coordinator use to time out long-running or stuck transactions?**
+
 
 - A. `transaction.timeout.ms`
 - B. `session.timeout.ms`
@@ -534,8 +654,10 @@ What does the transaction coordinator use to time out long-running or stuck tran
 
 ---
 
-## Question 54
-Which of the following actions can cause a transaction to be aborted?
+### Question 54
+
+**Which of the following actions can cause a transaction to be aborted?**
+
 
 - A. Producer calling `flush()`
 - B. Producer calling `abortTransaction()`
@@ -544,8 +666,10 @@ Which of the following actions can cause a transaction to be aborted?
 
 ---
 
-## Question 55
-What is true about consuming from a transactional topic with `isolation.level=read_uncommitted`?
+### Question 55
+
+**What is true about consuming from a transactional topic with `isolation.level=read_uncommitted`?**
+
 
 - A. The consumer will only see committed transactions
 - B. The consumer may see records from aborted or in-flight transactions
@@ -554,8 +678,10 @@ What is true about consuming from a transactional topic with `isolation.level=re
 
 ---
 
-## Question 56
-If an application requires at-least-once semantics only, what is the simplest approach for committing offsets?
+### Question 56
+
+**If an application requires at-least-once semantics only, what is the simplest approach for committing offsets?**
+
 
 - A. Use `read_committed` and transactions
 - B. Use `enable.auto.commit=true` and idempotent producer
@@ -564,8 +690,10 @@ If an application requires at-least-once semantics only, what is the simplest ap
 
 ---
 
-## Question 57
-In a CCDAK exam question describing a join of two topics with Streams EOS, which property ensures that intermediate state is not corrupted on failures?
+### Question 57
+
+**In a CCDAK exam question describing a join of two topics with Streams EOS, which property ensures that intermediate state is not corrupted on failures?**
+
 
 - A. State stores backed by transactional changelog topics
 - B. Using `auto.offset.reset=earliest`
@@ -574,8 +702,10 @@ In a CCDAK exam question describing a join of two topics with Streams EOS, which
 
 ---
 
-## Question 58
-What does EOS guarantee when a failure occurs after output records are written but before offsets are committed in a transactional application?
+### Question 58
+
+**What does EOS guarantee when a failure occurs after output records are written but before offsets are committed in a transactional application?**
+
 
 - A. Records remain visible but offsets are lost
 - B. Either both offsets and records are committed or neither is committed
@@ -584,8 +714,10 @@ What does EOS guarantee when a failure occurs after output records are written b
 
 ---
 
-## Question 59
-For producers using transactions, which statement about batching is correct?
+### Question 59
+
+**For producers using transactions, which statement about batching is correct?**
+
 
 - A. All records in a producer batch must belong to the same transaction
 - B. A single batch can contain records from different transactions but is tagged accordingly
@@ -594,8 +726,10 @@ For producers using transactions, which statement about batching is correct?
 
 ---
 
-## Question 60
-Which of the following describes a correct high-level pattern for an EOS-enabled microservice using the plain Java API?
+### Question 60
+
+**Which of the following describes a correct high-level pattern for an EOS-enabled microservice using the plain Java API?**
+
 
 - A. Non-transactional producer, auto-commit consumer
 - B. Transactional producer with `transactional.id`, consumer with `read_committed`, and offsets sent via `sendOffsetsToTransaction()`
