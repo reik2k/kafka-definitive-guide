@@ -6,7 +6,7 @@
 **Time Limit: 90 minutes**  
 **Passing Score: 70%**
 
-[View Solutions](../solutions/chapter-tests/chapter-01-solutions.md) | [Main README](../../README.md)
+[View Solutions](../chapter-tests-solutions/chapter-01-solutions.md) | [Main README](../../README.md)
 
 ---
 
@@ -29,7 +29,7 @@ B) To act as a publish/subscribe messaging system
 C) To replace web servers  
 D) To function as a NoSQL key-value store
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#answer-1)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md#answer-1)
 
 ### Question 2
 
@@ -40,7 +40,7 @@ B) An array of bytes
 C) A JSON object only  
 D) An XML document
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md#2-b-an-array-of-bytes)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-2)$
 
 ### Question 3
 
@@ -51,7 +51,7 @@ B) To authenticate the producer
 C) To control which partition the message is written to  
 D) To set the message priority
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md#3-c-to-control-which-partition-the-message-is-written-to)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-3)$
 
 ### Question 4
 
@@ -62,7 +62,7 @@ B) A collection of messages for the same topic and partition
 C) A group of topics  
 D) A set of consumer groups
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md#4-b-a-collection-of-messages-for-the-same-topic-and-partition)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-4)$
 
 ### Question 5
 
@@ -82,7 +82,7 @@ B) Binary only
 C) Apache Avro  
 D) CSV format
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#6.-c)-apache-avro)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-5)$
 
 ### Question 7
 
@@ -93,7 +93,7 @@ B) Schema evolution with backward and forward compatibility
 C) Built-in encryption  
 D) Automatic data validation
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-6)$
 
 ### Question 8
 
@@ -104,7 +104,7 @@ B) In topics and partitions
 C) In queues and stacks  
 D) In files and directories
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#8.-b)-in-topics-and-partitions)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-7)$
 
 ### Question 9
 
@@ -115,7 +115,7 @@ B) A category for organizing messages
 C) A consumer group  
 D) A broker instance
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#9.-b)-a-category-for-organizing-messages)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-8)$
 
 ### Question 10
 
@@ -126,7 +126,7 @@ B) A single log where messages are appended
 C) A consumer thread  
 D) A producer connection
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#10.-b)-a-single-log-where-messages-are-appended)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-9)$
 
 ### Question 11
 
@@ -137,7 +137,7 @@ B) No, only within a single partition
 C) Yes, but only for keyed messages  
 D) No, never guaranteed
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#11.-b)-no-only-within-a-single-partition)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-10.md)
 
 ### Question 12
 
@@ -148,7 +148,7 @@ B) To enable horizontal scalability
 C) To encrypt messages  
 D) To compress data
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#12.-b)-to-enable-horizontal-scalability)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-11)$
 
 ### Question 13
 
@@ -159,7 +159,7 @@ B) An application that creates new messages
 C) A broker that stores messages  
 D) A partition that holds data
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#13.-b)-an-application-that-creates-new-messages)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-12)$
 
 ### Question 14
 
@@ -170,7 +170,7 @@ B) An application that reads messages
 C) A broker that distributes messages  
 D) A topic that stores messages
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#14.-b)-an-application-that-reads-messages)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-13)$
 
 ### Question 15
 
@@ -181,7 +181,7 @@ B) The partition's size
 C) An integer value indicating the consumer's position in the partition  
 D) The broker's ID
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#15.-c)-an-integer-value-indicating-the-consumers-position-in-the-partition)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-14)$
 
 ### Question 16
 
@@ -192,7 +192,7 @@ B) In a local file
 C) In Kafka itself  
 D) In an external database only
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#16.-c)-in-kafka-itself)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-15)$
 
 ### Question 17
 
@@ -201,9 +201,9 @@ D) In an external database only
 A) A set of producers  
 B) One or more consumers working together to consume a topic  
 C) A collection of topics  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#17.-b)-one-or-more-consumers-working-together-to-consume-a-topic)
 D) A group of brokers
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-16)$
 
 ### Question 18
 
@@ -214,7 +214,7 @@ B) Only one consumer
 C) Unlimited consumers  
 D) Two consumers maximum
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#18.-b)-only-one-consumer)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-17)$
 
 ### Question 19
 
@@ -225,7 +225,7 @@ B) A single Kafka server
 C) A partition  
 D) A consumer group
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#19.-b)-a-single-kafka-server)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-18)$
 
 ### Question 20
 
@@ -236,7 +236,7 @@ B) It assigns partitions to brokers and monitors for broker failures
 C) It consumes messages  
 D) It produces messages
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#20.-b)-it-assigns-partitions-to-brokers-and-monitors-for-broker-failures)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-19)$
 
 ### Question 21
 
@@ -247,7 +247,7 @@ B) The broker that owns a partition and handles reads/writes
 C) The first partition created  
 D) The consumer with the highest priority
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#21.-b)-the-broker-that-owns-a-partition-and-handles-readswrites)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-20)$
 
 ### Question 22
 
@@ -256,9 +256,9 @@ D) The consumer with the highest priority
 A) To consume messages  
 B) To provide redundancy by replicating the leader's data  
 C) To produce messages  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#22.-b)-to-provide-redundancy-by-replicating-the-leaders-data)
 D) To compress data
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-21)$
 
 ### Question 23
 
@@ -269,7 +269,7 @@ B) The durable storage of messages for a period of time
 C) The number of consumers  
 D) The partition count
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#23.-b)-the-durable-storage-of-messages-for-a-period-of-time)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-22)$
 
 ### Question 24
 
@@ -279,7 +279,7 @@ A) By time period only
 B) By partition size only  
 C) By time period or partition size  
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#24.-c)-by-time-period-or-partition-size)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-23)$
 D) Retention cannot be configured
 
 ### Question 25
@@ -291,7 +291,7 @@ B) Retaining only the last message with a specific key
 C) Deleting all old messages  
 D) Encrypting messages
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#25.-c)-deleting-all-old-messages)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-24)$
 
 ### Question 26
 
@@ -299,10 +299,10 @@ D) Encrypting messages
 
 A) To increase message size  
 B) For data segregation, security isolation, and disaster recovery  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#26.-b)-for-data-segregation-security-isolation-and-disaster-recovery)
 C) To reduce costs only  
 D) To simplify configuration
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-25)$
 
 ### Question 27
 
@@ -313,7 +313,7 @@ B) To replicate data between Kafka clusters
 C) To compress messages  
 D) To encrypt data
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#27.-b)-to-replicate-data-between-kafka-clusters)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-26)$
 
 ### Question 28
 
@@ -324,7 +324,7 @@ B) By using a Kafka consumer and producer linked together
 C) By database replication  
 D) By network mirroring
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#28.-b)-by-using-a-kafka-consumer-and-producer-linked-together)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-27)$
 
 ### Question 29
 
@@ -335,7 +335,7 @@ B) Kafka can seamlessly handle multiple producers
 C) Producers cannot share topics  
 D) Each producer needs a separate cluster
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#29.-b)-kafka-can-seamlessly-handle-multiple-producers)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-28)$
 
 ### Question 30
 
@@ -343,10 +343,10 @@ D) Each producer needs a separate cluster
 
 A) Only one consumer can read a topic  
 B) Multiple consumers can read without interfering with each other  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#30.-b)-multiple-consumers-can-read-without-interfering-with-each-other)
 C) Consumers must take turns  
 D) Messages are deleted after first read
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-29)$
 
 ### Question 31
 
@@ -357,7 +357,7 @@ B) Consumers can fall behind without losing data
 C) Producers cannot send messages  
 D) Topics become read-only
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#31.-b)-consumers-can-fall-behind-without-losing-data)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-30)$
 
 ### Question 32
 
@@ -368,7 +368,7 @@ B) The remaining members reassign the partitions
 C) The topic is deleted  
 D) Producers stop sending messages
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#32.-b)-the-remaining-members-reassign-the-partitions)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-31)$
 
 ### Question 33
 
@@ -379,7 +379,7 @@ B) Flexible scalability from single broker to hundreds of brokers
 C) Requires downtime for scaling  
 D) Limited to 10 brokers maximum
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#33.-b)-flexible-scalability-from-single-broker-to-hundreds-of-brokers)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-32)$
 
 ### Question 34
 
@@ -387,10 +387,10 @@ D) Limited to 10 brokers maximum
 
 A) No, requires full shutdown  
 B) Yes, with no impact on availability  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#34.-b)-yes-with-no-impact-on-availability)
 C) Only during maintenance windows  
 D) Only if no consumers are connected
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-33)$
 
 ### Question 35
 
@@ -401,7 +401,7 @@ B) An API for pulling/pushing data from/to source and sink systems
 C) A consumer library  
 D) A monitoring tool only
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#35.-b)-an-api-for-pullingpushing-data-fromto-source-and-sink-systems)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-34)$
 
 ### Question 36
 
@@ -409,10 +409,10 @@ D) A monitoring tool only
 
 A) A video streaming service  
 B) A library for stream processing applications  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#36.-b)-a-library-for-stream-processing-applications)
 C) A storage system  
 D) A producer API
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-36)$
 
 ### Question 37
 
@@ -420,21 +420,21 @@ D) A producer API
 
 A) As the data warehouse  
 B) As the circulatory system carrying messages between components  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#37.-b)-as-the-circulatory-system-carrying-messages-between-components)
 C) As the primary database  
 D) As the UI layer
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-37)$
 
 ### Question 38
 
 **What was the original use case for Kafka at LinkedIn?**
 
 A) Video streaming  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#38.-b)-user-activity-tracking)
 B) User activity tracking  
 C) Email service  
 D) File storage
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-38)$
 
 ### Question 39
 
@@ -445,18 +445,18 @@ B) Publish/subscribe (pub/sub)
 C) Request-response only  
 D) RPC (Remote Procedure Call)
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#39.-b)-publishsubscribe-pubsub)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-39)$
 
 ### Question 40
 
 **In pub/sub messaging, who is the publisher?**
 
 A) The receiver of messages  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#40.-b)-the-sender-of-messages)
 B) The sender of messages  
 C) The broker only  
 D) The partition
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-40)$
 
 ### Question 41
 
@@ -464,21 +464,21 @@ D) The partition
 
 A) To consume messages  
 B) To act as a central point where messages are published  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#41.-b)-to-act-as-a-central-point-where-messages-are-published)
 C) To generate messages  
 D) To delete messages
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-41)$
 
 ### Question 42
 
 **What problem does Kafka solve for LinkedIn?**
 
 A) Email delivery  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#42.-b)-creating-a-unified-platform-for-metrics-and-activity-tracking)
 B) Creating a unified platform for metrics and activity tracking  
 C) Video encoding  
 D) DNS resolution
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-42)$
 
 ### Question 43
 
@@ -486,10 +486,10 @@ D) DNS resolution
 
 A) Low throughput and high latency  
 B) Decouple producers/consumers, provide persistence, optimize throughput, allow horizontal scaling  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#43.-b)-decouple-producersconsumers-provide-persistence-optimize-throughput-allow-horizontal-scaling)
 C) Replace databases  
 D) Centralize all applications
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-43)$
 
 ### Question 44
 
@@ -497,10 +497,10 @@ D) Centralize all applications
 
 A) A centralized error log  
 B) A durable, ordered record of transactions distributed across servers  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#44.-b)-a-durable-ordered-record-of-transactions-distributed-across-servers)
 C) A deleted message archive  
 D) A producer configuration file
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-44)$
 
 ### Question 45
 
@@ -508,21 +508,21 @@ D) A producer configuration file
 
 A) 2015  
 B) 2005  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#45.-c)-late-2010)
 C) Late 2010  
 D) 2020
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-45)$
 
 ### Question 46
 
 **When did Kafka graduate from Apache incubator?**
 
 A) 2008  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#46.-b)-october-2012)
 B) October 2012  
 C) 2015  
 D) 2020
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-46)$
 
 ### Question 47
 
@@ -533,7 +533,7 @@ B) Jay Kreps, Neha Narkhede, and Jun Rao
 C) Jeff Bezos  
 D) Mark Zuckerberg
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#47.-b)-jay-kreps-neha-narkhede-and-jun-rao)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-47)$
 
 ### Question 48
 
@@ -541,10 +541,10 @@ D) Mark Zuckerberg
 
 A) Microsoft  
 B) Google  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#48.-c)-linkedin)
 C) LinkedIn  
 D) Facebook
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-48)$
 
 ### Question 49
 
@@ -553,9 +553,9 @@ D) Facebook
 A) A single broker  
 B) A single topic of data regardless of partition count  
 C) A consumer group  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#49.-b)-a-single-topic-of-data-regardless-of-partition-count)
 D) A producer instance
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-49)$
 
 ### Question 50
 
@@ -563,10 +563,10 @@ D) A producer instance
 
 A) No ordering guaranteed  
 B) Messages are ordered within a partition  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#50.-b)-messages-are-ordered-within-a-partition)
 C) Messages are random  
 D) Ordering only works with timestamps
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-50)$
 
 ### Question 51
 
@@ -574,21 +574,21 @@ D) Ordering only works with timestamps
 
 A) By limiting producers and consumers  
 B) By scaling producers, consumers, and brokers to handle large message streams  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#51.-b)-by-scaling-producers-consumers-and-brokers-to-handle-large-message-streams)
 C) By keeping all data in memory only  
 D) By using single-threaded processing
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-51)$
 
 ### Question 52
 
 **What is the trade-off when using larger batches?**
 
 A) Higher latency but better throughput  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#52.-b)-lower-throughput-and-higher-latency)
 B) Lower throughput and higher latency  
 C) No trade-offs  
 D) Reduced message size
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-52)$
 
 ### Question 53
 
@@ -596,21 +596,21 @@ D) Reduced message size
 
 A) To slow down processing  
 B) To decouple writing and reading messages  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#53.-b)-to-decouple-writing-and-reading-messages)
 C) To increase message size  
 D) To limit producers
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-53)$
 
 ### Question 54
 
 **What happens when a partition is replicated?**
 
 A) Messages are encrypted  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#54.-b)-additional-brokers-store-copies-for-redundancy)
 B) Additional brokers store copies for redundancy  
 C) Consumers receive duplicate messages  
 D) Producers send messages twice
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-54)$
 
 ### Question 55
 
@@ -621,7 +621,7 @@ B) To the partition leader
 C) To the cluster controller  
 D) To the consumer
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#55.-b)-to-the-partition-leader)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-55)$
 
 ### Question 56
 
@@ -629,10 +629,10 @@ D) To the consumer
 
 A) No, never allowed  
 B) Yes, consumers may fetch from leader or followers  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#56.-b)-yes-consumers-may-fetch-from-leader-or-followers)
 C) Only on weekends  
 D) Only for small messages
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-56)$
 
 ### Question 57
 
@@ -640,21 +640,22 @@ D) Only for small messages
 
 A) Operating system replacement  
 B) Activity tracking, messaging, metrics and logging, stream processing  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#57.-b)-activity-tracking-messaging-metrics-and-logging-stream-processing)
 C) Web browser  
 D) Spreadsheet application
+
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-57)$
 
 ### Question 58
 
 **What problem did LinkedIn face before Kafka?**
 
 A) Too much automation  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#58.-b)-fragmented-systems-for-metrics-and-activity-tracking-with-poor-scalability)
 B) Fragmented systems for metrics and activity tracking with poor scalability  
 C) No employees  
 D) Too few applications
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-58)$
 
 ### Question 59
 
@@ -665,7 +666,7 @@ B) XML
 C) Binary  
 D) CSV
 
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#59.-a)-json)
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-59)$
 
 ### Question 60
 
@@ -674,14 +675,14 @@ D) CSV
 A) Deep symbolic meaning  
 B) Kafka was a writer, and the system is optimized for writing  
 C) It was a client's request  
-
-[solution](../solutions/chapter-tests/chapter-01-solutions.md/#60.-b)-kafka-was-a-writer-and-the-system-is-optimized-for-writing)
 D) Random name generator
+
+[solution](../chapter-tests-solutions/chapter-01-solutions.md/#answer-60)$
 
 ---
 
 ## Answer Key
-[View detailed solutions and explanations](../solutions/chapter-tests/chapter-01-solutions.md)
+[View detailed solutions and explanations](../chapter-tests-solutions/chapter-01-solutions.md)
 
 ---
 
