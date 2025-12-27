@@ -1,10 +1,13 @@
-# Chapter 08 – Exactly-Once Semantics – Solutions and Explanations
+# Chapter 08 – Exactly-Once Semantics – Solutions
+CCDAK Practice Test Solutions
+**Based on:** Kafka: The Definitive Guide, 2nd Edition, Chapter 8
 
-> **Answer Key with Detailed Explanations** | CCDAK Preparation Material
+[Back to Test](../../chapter-tests/chapter-08-test.md) | [Main README](../../README.md)
 
 ---
 
-## Question 1
+### Answer  1
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -12,7 +15,8 @@ Idempotent producers ensure that even if the client retries sends, the broker de
 
 ---
 
-## Question 2
+### Answer  2
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -20,7 +24,8 @@ When a transactional ID is configured, the client enables idempotence automatica
 
 ---
 
-## Question 3
+### Answer  3
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -31,7 +36,8 @@ Idempotent producers require:
 
 ---
 
-## Question 4
+### Answer  4
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -39,7 +45,8 @@ The PID (Producer ID) uniquely identifies the producer instance so the broker ca
 
 ---
 
-## Question 5
+### Answer  5
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -47,7 +54,8 @@ The transaction coordinator manages transaction state and writes metadata into a
 
 ---
 
-## Question 6
+### Answer  6
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -55,7 +63,8 @@ The transactional ID ties a logical producer across restarts, enabling fencing o
 
 ---
 
-## Question 7
+### Answer  7
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -63,7 +72,8 @@ For EOS (Exactly-Once Semantics), consumers typically use `read_committed` isola
 
 ---
 
-## Question 8
+### Answer  8
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -75,7 +85,8 @@ This ensures consumers only process finalized data.
 
 ---
 
-## Question 9
+### Answer  9
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -83,7 +94,8 @@ EOS read-process-write requires transactions that include the input offsets and 
 
 ---
 
-## Question 10
+### Answer  10
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -91,7 +103,8 @@ Kafka Streams wraps the input read, state updates, and output writes in a single
 
 ---
 
-## Question 11
+### Answer  11
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -99,7 +112,8 @@ Kafka Streams wraps the input read, state updates, and output writes in a single
 
 ---
 
-## Question 12
+### Answer  12
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -107,7 +121,8 @@ Aborted transactional records remain in the log physically but are never returne
 
 ---
 
-## Question 13
+### Answer  13
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -115,7 +130,8 @@ EOS for producers uses the idempotent producer combined with transactions to gua
 
 ---
 
-## Question 14
+### Answer  14
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -123,7 +139,8 @@ EOS for producers uses the idempotent producer combined with transactions to gua
 
 ---
 
-## Question 15
+### Answer  15
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -131,7 +148,8 @@ EOS for producers uses the idempotent producer combined with transactions to gua
 
 ---
 
-## Question 16
+### Answer  16
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -139,7 +157,8 @@ EOS for producers uses the idempotent producer combined with transactions to gua
 
 ---
 
-## Question 17
+### Answer  17
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -147,7 +166,8 @@ Offsets and output records commit together, ensuring that if a failure occurs, e
 
 ---
 
-## Question 18
+### Answer  18
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -157,7 +177,8 @@ After commit, transactional messages become visible to both:
 
 ---
 
-## Question 19
+### Answer  19
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -165,7 +186,8 @@ If the producer fails, the transaction coordinator may time out and abort the tr
 
 ---
 
-## Question 20
+### Answer  20
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -173,7 +195,8 @@ Kafka's EOS only covers operations inside Kafka. External systems (databases, fi
 
 ---
 
-## Question 21
+### Answer  21
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -181,7 +204,8 @@ Committing offsets before writes can cause data loss or duplicates on failure, s
 
 ---
 
-## Question 22
+### Answer  22
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -189,7 +213,8 @@ Idempotence prevents duplicate records at the broker level but does not coordina
 
 ---
 
-## Question 23
+### Answer  23
+
 **Correct Answer: D**
 
 **Explanation:**
@@ -197,7 +222,8 @@ Kafka Streams relies on changelog topics for state stores, which themselves are 
 
 ---
 
-## Question 24
+### Answer  24
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -205,7 +231,8 @@ Kafka Streams enables EOS using `processing.guarantee=exactly_once_v2` (or older
 
 ---
 
-## Question 25
+### Answer  25
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -216,7 +243,8 @@ This is achieved through transactional coordination.
 
 ---
 
-## Question 26
+### Answer  26
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -230,7 +258,8 @@ All of these add overhead and may increase latency compared with at-least-once.
 
 ---
 
-## Question 27
+### Answer  27
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -238,7 +267,8 @@ Transaction metadata is stored in an internal transaction state topic (`__transa
 
 ---
 
-## Question 28
+### Answer  28
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -246,7 +276,8 @@ If `max.in.flight.requests.per.connection` is too high (> 5), retries can reorde
 
 ---
 
-## Question 29
+### Answer  29
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -254,7 +285,8 @@ Sequence numbers are tracked per partition for each PID (Producer ID), enabling 
 
 ---
 
-## Question 30
+### Answer  30
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -262,7 +294,8 @@ Sequence numbers are tracked per partition for each PID (Producer ID), enabling 
 
 ---
 
-## Question 31
+### Answer  31
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -270,7 +303,8 @@ Using a stable transactional ID allows Kafka to reuse the same PID and enable fe
 
 ---
 
-## Question 32
+### Answer  32
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -278,7 +312,8 @@ Producer fencing ensures that once a new producer takes over a transactional ID,
 
 ---
 
-## Question 33
+### Answer  33
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -286,7 +321,8 @@ A fenced producer receives fatal errors (e.g., `ProducerFencedException`) and it
 
 ---
 
-## Question 34
+### Answer  34
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -294,7 +330,8 @@ With EOS enabled, partial outputs and offsets of an in-flight transaction are no
 
 ---
 
-## Question 35
+### Answer  35
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -302,7 +339,8 @@ Kafka alone cannot guarantee EOS across external systems such as databases unles
 
 ---
 
-## Question 36
+### Answer  36
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -310,7 +348,8 @@ Kafka alone cannot guarantee EOS across external systems such as databases unles
 
 ---
 
-## Question 37
+### Answer  37
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -318,7 +357,8 @@ With `processing.guarantee=exactly_once_v2` and a valid `application.id`, Kafka 
 
 ---
 
-## Question 38
+### Answer  38
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -332,7 +372,8 @@ The canonical EOS pattern for manual consumer-producer applications:
 
 ---
 
-## Question 39
+### Answer  39
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -340,7 +381,8 @@ Without `sendOffsetsToTransaction()`, offsets and outputs are not atomically lin
 
 ---
 
-## Question 40
+### Answer  40
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -348,7 +390,8 @@ Without `sendOffsetsToTransaction()`, offsets and outputs are not atomically lin
 
 ---
 
-## Question 41
+### Answer  41
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -356,7 +399,8 @@ Kafka's ordering and EOS guarantees are per partition, not across the entire top
 
 ---
 
-## Question 42
+### Answer  42
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -364,7 +408,8 @@ Streams with EOS ensures that state store updates and outputs are committed atom
 
 ---
 
-## Question 43
+### Answer  43
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -372,7 +417,8 @@ Kafka Streams abstracts away manual transaction management and is the preferred 
 
 ---
 
-## Question 44
+### Answer  44
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -380,7 +426,8 @@ Financial transaction processing and similar monetary operations are classic EOS
 
 ---
 
-## Question 45
+### Answer  45
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -388,7 +435,8 @@ Enabling EOS introduces transactional overhead, which typically increases latenc
 
 ---
 
-## Question 46
+### Answer  46
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -396,7 +444,8 @@ The broker uses the tuple (PID, partition, sequence number) to detect and drop d
 
 ---
 
-## Question 47
+### Answer  47
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -404,7 +453,8 @@ The broker uses the tuple (PID, partition, sequence number) to detect and drop d
 
 ---
 
-## Question 48
+### Answer  48
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -412,7 +462,8 @@ A `ProducerFencedException` is fatal. The application should close that producer
 
 ---
 
-## Question 49
+### Answer  49
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -420,7 +471,8 @@ Non-transactional producers can be part of custom EOS designs when combined with
 
 ---
 
-## Question 50
+### Answer  50
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -428,7 +480,8 @@ Transactions are built on top of idempotent producers. Idempotence is a foundati
 
 ---
 
-## Question 51
+### Answer  51
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -436,7 +489,8 @@ With `exactly_once_v2`, Kafka Streams uses transactions and idempotent producers
 
 ---
 
-## Question 52
+### Answer  52
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -444,7 +498,8 @@ Under EOS, Kafka Streams commits offsets as part of each transaction into the `_
 
 ---
 
-## Question 53
+### Answer  53
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -452,7 +507,8 @@ Under EOS, Kafka Streams commits offsets as part of each transaction into the `_
 
 ---
 
-## Question 54
+### Answer  54
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -460,7 +516,8 @@ An explicit `abortTransaction()` call by the producer, or a timeout by the trans
 
 ---
 
-## Question 55
+### Answer  55
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -468,7 +525,8 @@ An explicit `abortTransaction()` call by the producer, or a timeout by the trans
 
 ---
 
-## Question 56
+### Answer  56
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -476,7 +534,8 @@ For at-least-once semantics, using manual `commitSync()` after processing is the
 
 ---
 
-## Question 57
+### Answer  57
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -484,7 +543,8 @@ State stores rely on changelog topics written transactionally, so intermediate s
 
 ---
 
-## Question 58
+### Answer  58
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -492,7 +552,8 @@ EOS ensures atomicity: either both offsets and output records are committed toge
 
 ---
 
-## Question 59
+### Answer  59
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -500,7 +561,8 @@ Batches in a transactional producer are associated with a single transaction. Re
 
 ---
 
-## Question 60
+### Answer  60
+
 **Correct Answer: B**
 
 **Explanation:**

@@ -1,5 +1,6 @@
 # Chapter 4: Kafka Consumers - Reading Data from Kafka - Solutions
-**CCDAK Practice Test Solutions**
+CCDAK Practice Test Solutions
+**Based on:** Kafka: The Definitive Guide, 2nd Edition, Chapter 4
 
 [Back to Test](../../chapter-tests/chapter-04-test.md) | [Main README](../../README.md)
 
@@ -7,185 +8,542 @@
 
 ## Answer Key
 
-## **Question 1**
-**Explanation:** These are the three mandatory properties. group.id is commonly used but not strictly mandatory.
+### Answer 1
 
-## **Question 2**
-**Explanation:** If there are more consumers than partitions, the extra consumers will remain idle with no partition assignments.
+1. A) bootstrap.servers, key.deserializer, value.deserializer
 
-## **Question 3**
-**Explanation:** With 4 partitions and 2 consumers, partitions are evenly distributed, giving each consumer 2 partitions.
+**Explanation:** 
 
-## **Question 4**
-**Explanation:** Rebalance is the process of reassigning partition ownership when consumers join/leave or topics change.
+*These are the three mandatory properties. group.id is commonly used but not strictly mandatory.*
 
-## **Question 5**
-**Explanation:** Kafka has two rebalance types: eager (stop-the-world) and cooperative (incremental).
 
-## **Question 6**
-**Explanation:** Cooperative rebalancing is incremental and avoids the complete pause that occurs with eager rebalancing.
+### Answer 2
 
-## **Question 7**
-**Explanation:** Consumers send heartbeats via a background thread to maintain group membership.
+2. B) The extra consumers will be idle and receive no messages
 
-## **Question 8**
-**Explanation:** When heartbeats stop for longer than session.timeout.ms, the consumer is considered dead and rebalancing occurs.
+**Explanation:** 
 
-## **Question 9**
-**Explanation:** Static members maintain their partition assignments across restarts without triggering rebalances.
+*If there are more consumers than partitions, the extra consumers will remain idle with no partition assignments.*
 
-## **Question 10**
-**Explanation:** The subscribe() method is used to subscribe to one or more topics.
 
-## **Question 11**
-**Explanation:** You can use Pattern.compile() to subscribe to topics matching a regular expression.
+### Answer 3
 
-## **Question 12**
-**Explanation:** The poll loop is the core of consumer processing, continuously fetching and processing records.
+3. B) Each consumer reads from 2 partitions
 
-## **Question 13**
-**Explanation:** poll() returns a ConsumerRecords object containing multiple ConsumerRecord items.
+**Explanation:** 
 
-## **Question 14**
-**Explanation:** If poll() isn't called within max.poll.interval.ms, the consumer is deemed non-responsive and removed.
+*With 4 partitions and 2 consumers, partitions are evenly distributed, giving each consumer 2 partitions.*
 
-## **Question 15**
-**Explanation:** KafkaConsumer is not thread-safe. Each consumer must run in its own thread.
 
-## **Question 16**
-**Explanation:** fetch.min.bytes sets the minimum amount of data the broker waits to accumulate before responding.
+### Answer 4
 
-## **Question 17**
-**Explanation:** fetch.max.wait.ms limits how long the broker waits before responding, even if fetch.min.bytes isn't reached.
+4. B) Reassigning partitions to consumers in a group
 
-## **Question 18**
-**Explanation:** The default fetch.max.bytes is 50 MB.
+**Explanation:** 
 
-## **Question 19**
-**Explanation:** max.poll.records limits the number of records returned in one poll() call.
+*Rebalance is the process of reassigning partition ownership when consumers join/leave or topics change.*
 
-## **Question 20**
-**Explanation:** Heartbeat interval must be lower than session timeout, typically set to one-third.
 
-## **Question 21**
-**Explanation:** The default session.timeout.ms is 10 seconds (10000 ms).
+### Answer 5
 
-## **Question 22**
-**Explanation:** max.poll.interval.ms detects when the main thread is stuck processing while heartbeats continue.
+5. B) Eager and cooperative
 
-## **Question 23**
-**Explanation:** auto.offset.reset determines what offset to use when there's no committed offset or it's invalid.
+**Explanation:** 
 
-## **Question 24**
-**Explanation:** Valid values are: latest (newest records), earliest (oldest records), or none (throw exception).
+*Kafka has two rebalance types: eager (stop-the-world) and cooperative (incremental).*
 
-## **Question 25**
-**Explanation:** enable.auto.commit controls whether offsets are committed automatically during poll().
 
-## **Question 26**
-**Explanation:** The default auto.commit.interval.ms is 5000 milliseconds (5 seconds).
+### Answer 6
+
+6. B) Cooperative only reassigns a subset of partitions and allows continued consumption
+
+**Explanation:** 
+
+*Cooperative rebalancing is incremental and avoids the complete pause that occurs with eager rebalancing.*
+
+
+### Answer 7
+
+7. A) By sending heartbeats to the group coordinator
+
+**Explanation:** 
+
+*Consumers send heartbeats via a background thread to maintain group membership.*
+
+
+### Answer 8
+
+8. B) The group coordinator considers it dead and triggers a rebalance
+
+**Explanation:** 
+
+*When heartbeats stop for longer than session.timeout.ms, the consumer is considered dead and rebalancing occurs.*
+
+
+### Answer 9
+
+9. B) Consumers with unique group.instance.id that retain partitions across restarts
+
+**Explanation:** 
+
+*Static members maintain their partition assignments across restarts without triggering rebalances.*
+
+
+### Answer 10
+
+10. A) consumer.subscribe()
+
+**Explanation:** 
+
+*The subscribe() method is used to subscribe to one or more topics.*
+
+
+### Answer 11
+
+11. B) Yes, for matching multiple topic names
+
+**Explanation:** 
+
+*You can use Pattern.compile() to subscribe to topics matching a regular expression.*
+
+
+### Answer 12
+
+12. B) The main loop where consumers continuously poll Kafka for data
+
+**Explanation:** 
+
+*The poll loop is the core of consumer processing, continuously fetching and processing records.*
+
+
+### Answer 13
+
+13. C) ConsumerRecords collection
+
+**Explanation:** 
+
+*poll() returns a ConsumerRecords object containing multiple ConsumerRecord items.*
+
+
+### Answer 14
+
+14. B) Consumer is considered dead and evicted from the group
+
+**Explanation:** 
+
+*If poll() isn't called within max.poll.interval.ms, the consumer is deemed non-responsive and removed.*
+
+
+### Answer 15
+
+15. B) No, one consumer per thread is the rule
+
+**Explanation:** 
+
+*KafkaConsumer is not thread-safe. Each consumer must run in its own thread.*
+
+
+### Answer 16
+
+16. B) Minimum data broker sends before responding to consumer
+
+**Explanation:** 
+
+*fetch.min.bytes sets the minimum amount of data the broker waits to accumulate before responding.*
+
+
+### Answer 17
+
+17. A) Maximum time to wait for fetch.min.bytes of data
+
+**Explanation:** 
+
+*fetch.max.wait.ms limits how long the broker waits before responding, even if fetch.min.bytes isn't reached.*
+
+
+### Answer 18
+
+18. C) 50 MB
+
+**Explanation:** 
+
+*The default fetch.max.bytes is 50 MB.*
+
+
+### Answer 19
+
+19. B) Maximum records returned by a single poll()
+
+**Explanation:** 
+
+*max.poll.records limits the number of records returned in one poll() call.*
+
+
+### Answer 20
+
+20. B) heartbeat.interval.ms should be lower, typically 1/3 of session.timeout.ms
+
+**Explanation:** 
+
+*Heartbeat interval must be lower than session timeout, typically set to one-third.*
+
+
+### Answer 21
+
+21. C) 10 seconds
+
+**Explanation:** 
+
+*The default session.timeout.ms is 10 seconds (10000 ms).*
+
+
+### Answer 22
+
+22. B) Deadlocked main thread while background thread sends heartbeats
+
+**Explanation:** 
+
+*max.poll.interval.ms detects when the main thread is stuck processing while heartbeats continue.*
+
+
+### Answer 23
+
+23. B) Behavior when consumer starts with no valid offset
+
+**Explanation:** 
+
+*auto.offset.reset determines what offset to use when there's no committed offset or it's invalid.*
+
+
+### Answer 24
+
+24. A) latest, earliest, none
+
+**Explanation:** 
+
+*Valid values are: latest (newest records), earliest (oldest records), or none (throw exception).*
+
+
+### Answer 25
+
+25. B) Whether consumer automatically commits offsets
+
+**Explanation:** 
+
+*enable.auto.commit controls whether offsets are committed automatically during poll().*
+
+
+### Answer 26
+
+26. B) 5 seconds
+
+**Explanation:** 
+
+*The default auto.commit.interval.ms is 5000 milliseconds (5 seconds).*
+
 
 ### 27. A, B, C, E (Range, RoundRobin, Sticky, CooperativeSticky)
-**Explanation:** Kafka provides Range, RoundRobin, Sticky, and CooperativeSticky assignment strategies. Random is not a standard strategy.
+**Explanation:** 
 
-## **Question 28**
-**Explanation:** Range assigns consecutive partitions from each topic to consumers.
+*Kafka provides Range, RoundRobin, Sticky, and CooperativeSticky assignment strategies. Random is not a standard strategy.*
 
-## **Question 29**
-**Explanation:** CooperativeSticky is the only strategy that supports cooperative (incremental) rebalancing.
 
-## **Question 30**
-**Explanation:** client.rack enables rack-aware replica selection for fetching from the closest replica.
+### Answer 28
 
-## **Question 31**
-**Explanation:** Offset commit updates the consumer's current position (last processed offset) in a partition.
+28. B) Range
 
-## **Question 32**
-**Explanation:** Committed offsets are stored in the internal __consumer_offsets topic.
+**Explanation:** 
 
-## **Question 33**
-**Explanation:** If committed offset < last processed, messages between them will be reprocessed after rebalance.
+*Range assigns consecutive partitions from each topic to consumers.*
 
-## **Question 34**
-**Explanation:** If committed offset > last processed, messages between them will not be consumed.
 
-## **Question 35**
-**Explanation:** With auto-commit enabled, offsets are committed at regular intervals during poll() calls.
+### Answer 29
 
-## **Question 36**
-**Explanation:** Auto-commit can cause duplicates if rebalance happens between processing and the next commit.
+29. D) CooperativeSticky
 
-## **Question 37**
-**Explanation:** commitSync() commits synchronously, blocking until the broker responds.
+**Explanation:** 
 
-## **Question 38**
-**Explanation:** commitSync() automatically retries on retriable errors.
+*CooperativeSticky is the only strategy that supports cooperative (incremental) rebalancing.*
 
-## **Question 39**
-**Explanation:** commitAsync() doesn't block waiting for broker response, improving throughput.
 
-## **Question 40**
-**Explanation:** Retrying failed commits could succeed out of order, potentially committing older offsets after newer ones.
+### Answer 30
 
-## **Question 41**
-**Explanation:** This pattern uses async commits normally for performance, sync on shutdown to ensure final commit succeeds.
+30. B) Fetching from closest replica
 
-## **Question 42**
-**Explanation:** Both commitSync() and commitAsync() can accept a map of specific offsets to commit.
+**Explanation:** 
 
-## **Question 43**
-**Explanation:** Implement ConsumerRebalanceListener to receive rebalance notifications.
+*client.rack enables rack-aware replica selection for fetching from the closest replica.*
 
-## **Question 44**
-**Explanation:** onPartitionsRevoked() is called before the consumer gives up partitions during rebalance.
 
-## **Question 45**
-**Explanation:** onPartitionsAssigned() is called after assignment but before poll() starts returning records.
+### Answer 31
 
-## **Question 46**
-**Explanation:** onPartitionsLost() handles exceptional cooperative rebalance scenarios.
+31. B) Updating current position in partition
 
-## **Question 47**
-**Explanation:** seekToBeginning() resets offset to the earliest available offset for specified partitions.
+**Explanation:** 
 
-## **Question 48**
-**Explanation:** seekToEnd() moves offset to the end, so only new messages will be consumed.
+*Offset commit updates the consumer's current position (last processed offset) in a partition.*
 
-## **Question 49**
-**Explanation:** wakeup() interrupts poll(), then close() cleanly shuts down the consumer.
 
-## **Question 50**
-**Explanation:** wakeup() causes poll() to throw WakeupException.
+### Answer 32
 
-## **Question 51**
-**Explanation:** wakeup() is specifically designed to be called from a different thread safely.
+32. B) In __consumer_offsets topic
 
-## **Question 52**
-**Explanation:** The producer's serializer must match the consumer's deserializer for the data format.
+**Explanation:** 
 
-## **Question 53**
-**Explanation:** Standard serialization formats provide schema evolution and better compatibility than custom deserializers.
+*Committed offsets are stored in the internal __consumer_offsets topic.*
 
-## **Question 54**
-**Explanation:** KafkaAvroDeserializer needs schema.registry.url to retrieve schemas.
 
-## **Question 55**
-**Explanation:** Standalone consumers use assign() to manually assign specific partitions.
+### Answer 33
 
-## **Question 56**
-**Explanation:** A consumer can either subscribe to topics OR assign partitions, but not both simultaneously.
+33. B) Messages are processed twice
 
-## **Question 57**
-**Explanation:** The first poll() handles all group coordination before returning records.
+**Explanation:** 
 
-## **Question 58**
-**Explanation:** offsets.retention.minutes controls how long Kafka retains offsets for inactive consumer groups.
+*If committed offset < last processed, messages between them will be reprocessed after rebalance.*
 
-## **Question 59**
-**Explanation:** The default offsets.retention.minutes is 10080 minutes (7 days).
 
-## **Question 60**
-**Explanation:** max.partition.fetch.bytes controls the maximum bytes returned per partition (default 1 MB).
+### Answer 34
+
+34. B) Messages between offsets are missed
+
+**Explanation:** 
+
+*If committed offset > last processed, messages between them will not be consumed.*
+
+
+### Answer 35
+
+35. B) Every auto.commit.interval.ms during poll()
+
+**Explanation:** 
+
+*With auto-commit enabled, offsets are committed at regular intervals during poll() calls.*
+
+
+### Answer 36
+
+36. B) Cannot eliminate duplicate messages during rebalance
+
+**Explanation:** 
+
+*Auto-commit can cause duplicates if rebalance happens between processing and the next commit.*
+
+
+### Answer 37
+
+37. B) Commits latest offset from poll() and blocks until complete
+
+**Explanation:** 
+
+*commitSync() commits synchronously, blocking until the broker responds.*
+
+
+### Answer 38
+
+38. B) It retries until success or unrecoverable error
+
+**Explanation:** 
+
+*commitSync() automatically retries on retriable errors.*
+
+
+### Answer 39
+
+39. B) Better throughput, doesn't block
+
+**Explanation:** 
+
+*commitAsync() doesn't block waiting for broker response, improving throughput.*
+
+
+### Answer 40
+
+40. B) Later commits may have already succeeded, causing order issues
+
+**Explanation:** 
+
+*Retrying failed commits could succeed out of order, potentially committing older offsets after newer ones.*
+
+
+### Answer 41
+
+41. A) Use commitAsync() in loop, commitSync() before shutdown
+
+**Explanation:** 
+
+*This pattern uses async commits normally for performance, sync on shutdown to ensure final commit succeeds.*
+
+
+### Answer 42
+
+42. B) Yes, by passing a map of partitions and offsets
+
+**Explanation:** 
+
+*Both commitSync() and commitAsync() can accept a map of specific offsets to commit.*
+
+
+### Answer 43
+
+43. B) ConsumerRebalanceListener
+
+**Explanation:** 
+
+*Implement ConsumerRebalanceListener to receive rebalance notifications.*
+
+
+### Answer 44
+
+44. B) Before losing ownership of partitions
+
+**Explanation:** 
+
+*onPartitionsRevoked() is called before the consumer gives up partitions during rebalance.*
+
+
+### Answer 45
+
+45. B) After partitions are assigned but before consumption starts
+
+**Explanation:** 
+
+*onPartitionsAssigned() is called after assignment but before poll() starts returning records.*
+
+
+### Answer 46
+
+46. B) Exceptional cases with cooperative rebalancing where partitions were reassigned without revocation
+
+**Explanation:** 
+
+*onPartitionsLost() handles exceptional cooperative rebalance scenarios.*
+
+
+### Answer 47
+
+47. B) Starts reading from beginning of specified partitions
+
+**Explanation:** 
+
+*seekToBeginning() resets offset to the earliest available offset for specified partitions.*
+
+
+### Answer 48
+
+48. B) Starts consuming only new messages from specified partitions
+
+**Explanation:** 
+
+*seekToEnd() moves offset to the end, so only new messages will be consumed.*
+
+
+### Answer 49
+
+49. B) Call consumer.wakeup() from another thread, then consumer.close()
+
+**Explanation:** 
+
+*wakeup() interrupts poll(), then close() cleanly shuts down the consumer.*
+
+
+### Answer 50
+
+50. B) WakeupException
+
+**Explanation:** 
+
+*wakeup() causes poll() to throw WakeupException.*
+
+
+### Answer 51
+
+51. B) Yes, it's the only thread-safe consumer method
+
+**Explanation:** 
+
+*wakeup() is specifically designed to be called from a different thread safely.*
+
+
+### Answer 52
+
+52. B) Serializer and deserializer for the data
+
+**Explanation:** 
+
+*The producer's serializer must match the consumer's deserializer for the data format.*
+
+
+### Answer 53
+
+53. B) Standard formats like Avro, Thrift, or Protobuf
+
+**Explanation:** 
+
+*Standard serialization formats provide schema evolution and better compatibility than custom deserializers.*
+
+
+### Answer 54
+
+54. B) schema.registry.url
+
+**Explanation:** 
+
+*KafkaAvroDeserializer needs schema.registry.url to retrieve schemas.*
+
+
+### Answer 55
+
+55. B) Use assign() with specific partitions
+
+**Explanation:** 
+
+*Standalone consumers use assign() to manually assign specific partitions.*
+
+
+### Answer 56
+
+56. B) No, it's one or the other
+
+**Explanation:** 
+
+*A consumer can either subscribe to topics OR assign partitions, but not both simultaneously.*
+
+
+### Answer 57
+
+57. B) Finds GroupCoordinator, joins group, receives partition assignment
+
+**Explanation:** 
+
+*The first poll() handles all group coordination before returning records.*
+
+
+### Answer 58
+
+58. B) How long committed offsets are retained after group becomes empty
+
+**Explanation:** 
+
+*offsets.retention.minutes controls how long Kafka retains offsets for inactive consumer groups.*
+
+
+### Answer 59
+
+59. B) 7 days
+
+**Explanation:** 
+
+*The default offsets.retention.minutes is 10080 minutes (7 days).*
+
+
+### Answer 60
+
+60. B) max.partition.fetch.bytes
+
+**Explanation:** 
+
+*max.partition.fetch.bytes controls the maximum bytes returned per partition (default 1 MB).*
+
 
 ---
 

@@ -1,10 +1,13 @@
-# Chapter 10 – Cross-Cluster Data Mirroring – Solutions and Explanations
+# Chapter 10 – Cross-Cluster Data Mirroring – Solutions
+CCDAK Practice Test Solutions
+**Based on:** Kafka: The Definitive Guide, 2nd Edition, Chapter 10
 
-> **Answer Key with Detailed Explanations** | CCDAK Preparation Material
+[Back to Test](../../chapter-tests/chapter-10-test.md) | [Main README](../../README.md)
 
 ---
 
-## Question 1
+### Answer  1
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -12,7 +15,8 @@ In Kafka terminology, replication refers to the copying of data between brokers 
 
 ---
 
-## Question 2
+### Answer  2
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -20,7 +24,8 @@ The hub-and-spoke architecture is designed for scenarios where data is produced 
 
 ---
 
-## Question 3
+### Answer  3
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -28,7 +33,8 @@ The main limitation of hub-and-spoke architecture is that processors in one regi
 
 ---
 
-## Question 4
+### Answer  4
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -36,7 +42,8 @@ Consuming from remote datacenters is safer than producing to them because if a n
 
 ---
 
-## Question 5
+### Answer  5
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -44,7 +51,8 @@ Active-active architecture provides the ability to serve users from nearby datac
 
 ---
 
-## Question 6
+### Answer  6
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -52,7 +60,8 @@ To prevent endless mirroring loops in active-active architecture, each logical t
 
 ---
 
-## Question 7
+### Answer  7
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -60,7 +69,8 @@ The main challenge with active-active architecture is handling conflicts when da
 
 ---
 
-## Question 8
+### Answer  8
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -68,7 +78,8 @@ In active-standby architecture, the standby cluster typically does nothing excep
 
 ---
 
-## Question 9
+### Answer  9
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -76,7 +87,8 @@ Recovery Point Objective (RPO) defines the maximum amount of time for which data
 
 ---
 
-## Question 10
+### Answer  10
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -84,7 +96,8 @@ Recovery Time Objective (RTO) defines the maximum amount of time before all serv
 
 ---
 
-## Question 11
+### Answer  11
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -92,7 +105,8 @@ The auto offset reset option uses the `auto.offset.reset` configuration to deter
 
 ---
 
-## Question 12
+### Answer  12
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -100,7 +114,8 @@ Offsets can diverge between primary and DR clusters due to several factors: 1) D
 
 ---
 
-## Question 13
+### Answer  13
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -108,7 +123,8 @@ The `kafka-consumer-groups` tool provides time-based offset reset functionality 
 
 ---
 
-## Question 14
+### Answer  14
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -116,7 +132,8 @@ A stretch cluster is a single Kafka cluster installed across multiple datacenter
 
 ---
 
-## Question 15
+### Answer  15
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -124,7 +141,8 @@ Stretch clusters require at least three datacenters because ZooKeeper requires a
 
 ---
 
-## Question 16
+### Answer  16
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -132,7 +150,8 @@ The main advantage of stretch clusters is that synchronous replication is possib
 
 ---
 
-## Question 17
+### Answer  17
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -140,7 +159,8 @@ MirrorMaker 2.0, introduced in Kafka version 2.4.0, is based on the Kafka Connec
 
 ---
 
-## Question 18
+### Answer  18
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -148,7 +168,8 @@ A replication flow in MirrorMaker defines the configuration of a directional dat
 
 ---
 
-## Question 19
+### Answer  19
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -156,7 +177,8 @@ In MirrorMaker configuration, topics for mirroring are specified using regular e
 
 ---
 
-## Question 20
+### Answer  20
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -164,7 +186,8 @@ The default naming strategy for mirrored topics in MirrorMaker is to prefix the 
 
 ---
 
-## Question 21
+### Answer  21
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -172,7 +195,8 @@ Prefixing target topics with the source cluster alias prevents replication cycle
 
 ---
 
-## Question 22
+### Answer  22
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -180,7 +204,8 @@ The `tasks.max` configuration limits the maximum number of tasks that the Mirror
 
 ---
 
-## Question 23
+### Answer  23
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -188,7 +213,8 @@ SSL or SASL_SSL is recommended for securing cross-datacenter traffic in MirrorMa
 
 ---
 
-## Question 24
+### Answer  24
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -196,7 +222,8 @@ MirrorMaker requires Topic:Read permission on the source cluster to consume from
 
 ---
 
-## Question 25
+### Answer  25
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -204,7 +231,8 @@ MirrorMaker should typically be deployed in the target datacenter, consuming dat
 
 ---
 
-## Question 26
+### Answer  26
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -212,7 +240,8 @@ Consuming remotely is preferred because if a network connection fails, the data 
 
 ---
 
-## Question 27
+### Answer  27
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -220,7 +249,8 @@ The `replication-latency-ms` metric measures the time interval between when a re
 
 ---
 
-## Question 28
+### Answer  28
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -228,7 +258,8 @@ MirrorMaker 2.0 allocates partitions to tasks evenly without using Kafka's consu
 
 ---
 
-## Question 29
+### Answer  29
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -236,7 +267,8 @@ The `errors.tolerance=none` configuration ensures MirrorMaker fails fast when it
 
 ---
 
-## Question 30
+### Answer  30
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -244,7 +276,8 @@ In active-active topology, endless mirroring loops are prevented by using cluste
 
 ---
 
-## Question 31
+### Answer  31
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -252,7 +285,8 @@ uReplicator is Uber's solution to address MirrorMaker's rebalancing issues at ve
 
 ---
 
-## Question 32
+### Answer  32
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -260,7 +294,8 @@ uReplicator uses Apache Helix as a central (but highly available) controller to 
 
 ---
 
-## Question 33
+### Answer  33
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -268,7 +303,8 @@ Brooklin is LinkedIn's distributed service that provides a generic data ingestio
 
 ---
 
-## Question 34
+### Answer  34
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -276,7 +312,8 @@ Cluster Linking's key feature is offset-preserving replication across clusters, 
 
 ---
 
-## Question 35
+### Answer  35
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -284,7 +321,8 @@ Multi-Region Clusters (MRC) in Confluent Platform combine synchronous and asynch
 
 ---
 
-## Question 36
+### Answer  36
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -292,7 +330,8 @@ Observers in Confluent Server are asynchronous replicas that don't join the In-S
 
 ---
 
-## Question 37
+### Answer  37
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -300,7 +339,8 @@ The most critical metric for failover monitoring is the lag between source and t
 
 ---
 
-## Question 38
+### Answer  38
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -308,7 +348,8 @@ The recommended minimum value for `tasks.max` in production MirrorMaker is 2. Wh
 
 ---
 
-## Question 39
+### Answer  39
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -316,7 +357,8 @@ The `max.in.flight.requests.per.connection` configuration can significantly incr
 
 ---
 
-## Question 40
+### Answer  40
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -324,7 +366,8 @@ Increasing `linger.ms` introduces a small amount of latency but allows batches t
 
 ---
 
-## Question 41
+### Answer  41
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -332,7 +375,8 @@ If fetch-size metrics (fetch-size-avg and fetch-size-max) are close to the confi
 
 ---
 
-## Question 42
+### Answer  42
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -340,7 +384,8 @@ Wide Area Networks (WANs) typically have far lower available bandwidth than loca
 
 ---
 
-## Question 43
+### Answer  43
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -348,7 +393,8 @@ Offset translation maintains a mapping between offsets in the primary and DR clu
 
 ---
 
-## Question 44
+### Answer  44
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -356,7 +402,8 @@ A canary process sends test events periodically (typically every minute) to a sp
 
 ---
 
-## Question 45
+### Answer  45
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -364,7 +411,8 @@ Burrow, developed by LinkedIn, provides more sophisticated lag analysis than kaf
 
 ---
 
-## Question 46
+### Answer  46
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -372,7 +420,8 @@ Deploying MirrorMaker in the source datacenter should be considered when cross-d
 
 ---
 
-## Question 47
+### Answer  47
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -380,7 +429,8 @@ The main risk of remote producing is that events could be lost if a network part
 
 ---
 
-## Question 48
+### Answer  48
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -388,7 +438,8 @@ Active-active architecture supports failover with minimal manual intervention be
 
 ---
 
-## Question 49
+### Answer  49
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -396,7 +447,8 @@ In stretch clusters, `min.insync.replicas` combined with `acks=all` and rack def
 
 ---
 
-## Question 50
+### Answer  50
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -404,7 +456,8 @@ In MirrorMaker 2.0 (based on Kafka Connect), consumer tasks are responsible for 
 
 ---
 
-## Question 51
+### Answer  51
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -412,7 +465,8 @@ Using Kafka Connect framework provides MirrorMaker with centralized management v
 
 ---
 
-## Question 52
+### Answer  52
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -420,7 +474,8 @@ Configuration prefixes in MirrorMaker allow hierarchical configuration with clus
 
 ---
 
-## Question 53
+### Answer  53
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -428,7 +483,8 @@ The 2.5 DC architecture is a popular stretch cluster model with two full datacen
 
 ---
 
-## Question 54
+### Answer  54
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -436,7 +492,8 @@ According to the chapter, mirroring solutions currently don't support transactio
 
 ---
 
-## Question 55
+### Answer  55
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -444,7 +501,8 @@ During unplanned failover, some data loss is expected because all mirroring solu
 
 ---
 
-## Question 56
+### Answer  56
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -452,7 +510,8 @@ Increasing TCP buffer sizes (net.core.rmem_default, rmem_max, wmem_default, wmem
 
 ---
 
-## Question 57
+### Answer  57
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -460,7 +519,8 @@ On the target cluster, MirrorMaker needs Topic:Write permission to produce to ta
 
 ---
 
-## Question 58
+### Answer  58
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -468,7 +528,8 @@ Failover procedures should be practiced at least quarterly according to best pra
 
 ---
 
-## Question 59
+### Answer  59
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -476,7 +537,8 @@ Record headers, introduced in Apache Kafka version 0.11.0, enable events to be t
 
 ---
 
-## Question 60
+### Answer  60
+
 **Correct Answer: B**
 
 **Explanation:**

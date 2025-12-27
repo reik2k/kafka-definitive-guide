@@ -1,10 +1,14 @@
 # Chapter 11 – Securing Kafka – Solutions and Explanations
 
-> **Answer Key with Detailed Explanations** | CCDAK Preparation Material
+CCDAK Practice Test Solutions
+**Based on:** Kafka: The Definitive Guide, 2nd Edition, Chapter 11
+
+[Back to Test](../../chapter-tests/chapter-11-test.md) | [Main README](../../README.md)
 
 ---
 
-## Question 1
+### Answer  1
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -12,7 +16,8 @@ Kafka supports four security protocols: PLAINTEXT (no security), SSL (TLS with o
 
 ---
 
-## Question 2
+### Answer  2
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -20,7 +25,8 @@ Authentication establishes your identity (who you are) while authorization deter
 
 ---
 
-## Question 3
+### Answer  3
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -28,7 +34,8 @@ SSL without client authentication provides encryption of data in transit but doe
 
 ---
 
-## Question 4
+### Answer  4
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -36,7 +43,8 @@ TLS stands for Transport Layer Security, and its predecessor was called Secure S
 
 ---
 
-## Question 5
+### Answer  5
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -44,7 +52,8 @@ The `inter.broker.listener.name` configuration determines which listener is used
 
 ---
 
-## Question 6
+### Answer  6
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -52,7 +61,8 @@ The principal `User:ANONYMOUS` (all uppercase) is used for unauthenticated conne
 
 ---
 
-## Question 7
+### Answer  7
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -60,7 +70,8 @@ The configuration `ssl.client.auth=required` enables required client authenticat
 
 ---
 
-## Question 8
+### Answer  8
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -68,7 +79,8 @@ Hostname verification protects against man-in-the-middle attacks by verifying th
 
 ---
 
-## Question 9
+### Answer  9
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -76,7 +88,8 @@ SASL/GSSAPI is the SASL mechanism used for Kerberos authentication. GSSAPI (Gene
 
 ---
 
-## Question 10
+### Answer  10
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -84,7 +97,8 @@ SASL stands for Simple Authentication and Security Layer. It's a framework for p
 
 ---
 
-## Question 11
+### Answer  11
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -92,7 +106,8 @@ Kafka supports five SASL mechanisms out of the box: GSSAPI (Kerberos), PLAIN (us
 
 ---
 
-## Question 12
+### Answer  12
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -100,7 +115,8 @@ The default iteration count for SCRAM in Kafka is 4,096. This high iteration cou
 
 ---
 
-## Question 13
+### Answer  13
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -108,7 +124,8 @@ SCRAM user credentials are stored in ZooKeeper. Brokers load SCRAM metadata into
 
 ---
 
-## Question 14
+### Answer  14
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -116,7 +133,8 @@ The `sasl.jaas.config` configuration option is used to specify JAAS configuratio
 
 ---
 
-## Question 15
+### Answer  15
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -124,7 +142,8 @@ Keytab files store the mapping of Kerberos principals to their long-term keys in
 
 ---
 
-## Question 16
+### Answer  16
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -132,7 +151,8 @@ The key store contains the private key and certificate. The trust store contains
 
 ---
 
-## Question 17
+### Answer  17
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -140,7 +160,8 @@ PKCS12 is a binary key store format used to store private keys and certificates.
 
 ---
 
-## Question 18
+### Answer  18
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -148,7 +169,8 @@ SSL key stores and trust stores can be dynamically updated without broker restar
 
 ---
 
-## Question 19
+### Answer  19
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -156,7 +178,8 @@ The Subject Alternative Name (SAN) extension in SSL certificates stores the host
 
 ---
 
-## Question 20
+### Answer  20
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -164,7 +187,8 @@ The `connection.failed.authentication.delay.ms` configuration delays the respons
 
 ---
 
-## Question 21
+### Answer  21
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -172,7 +196,8 @@ SCRAM stands for Salted Challenge Response Authentication Mechanism. It applies 
 
 ---
 
-## Question 22
+### Answer  22
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -180,7 +205,8 @@ SCRAM stands for Salted Challenge Response Authentication Mechanism. It applies 
 
 ---
 
-## Question 23
+### Answer  23
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -188,7 +214,8 @@ ACLs are stored in ZooKeeper and cached in memory by brokers for high-performanc
 
 ---
 
-## Question 24
+### Answer  24
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -196,7 +223,8 @@ Describe permission is implicitly granted if Read, Write, Alter, or Delete permi
 
 ---
 
-## Question 25
+### Answer  25
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -204,7 +232,8 @@ The `super.users` configuration uses semicolon as the separator (not comma like 
 
 ---
 
-## Question 26
+### Answer  26
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -212,7 +241,8 @@ TransactionalId is the ACL resource type used for transactional producers. Produ
 
 ---
 
-## Question 27
+### Answer  27
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -220,7 +250,8 @@ ClusterAction ACL operation allows inter-broker requests including controller re
 
 ---
 
-## Question 28
+### Answer  28
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -228,7 +259,8 @@ The `connections.max.reauth.ms` configuration enables reauthentication for SASL 
 
 ---
 
-## Question 29
+### Answer  29
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -236,7 +268,8 @@ Delegation tokens are shared secrets between Kafka brokers and clients that prov
 
 ---
 
-## Question 30
+### Answer  30
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -244,7 +277,8 @@ Delegation tokens use SASL/SCRAM for authentication. The token identifier is use
 
 ---
 
-## Question 31
+### Answer  31
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -252,7 +286,8 @@ SASL/PLAIN should only be used with SSL (SASL_SSL) because it transmits clear-te
 
 ---
 
-## Question 32
+### Answer  32
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -260,7 +295,8 @@ The `kafka.authorizer.logger` is used for authorization logging. It generates IN
 
 ---
 
-## Question 33
+### Answer  33
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -268,7 +304,8 @@ SSL introduces a 20-30% performance overhead due to CPU usage for encryption and
 
 ---
 
-## Question 34
+### Answer  34
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -276,7 +313,8 @@ Kafka enables TLSv1.2 and TLSv1.3 by default. Older protocols like TLSv1.0 and T
 
 ---
 
-## Question 35
+### Answer  35
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -284,7 +322,8 @@ End-to-end encryption encrypts messages at the serializer level in producers and
 
 ---
 
-## Question 36
+### Answer  36
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -292,7 +331,8 @@ In end-to-end encryption, encrypted messages are decrypted at the deserializer i
 
 ---
 
-## Question 37
+### Answer  37
+
 **Correct Answer: D**
 
 **Explanation:**
@@ -300,7 +340,8 @@ ZooKeeper added TLS support in version 3.5.0. Kafka can be configured to use SSL
 
 ---
 
-## Question 38
+### Answer  38
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -308,7 +349,8 @@ ZooKeeper supports SASL authentication using GSSAPI (Kerberos) and DIGEST-MD5 me
 
 ---
 
-## Question 39
+### Answer  39
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -316,7 +358,8 @@ The kafka-acls tool manages ACLs using the authorizer configured in brokers. It 
 
 ---
 
-## Question 40
+### Answer  40
+
 **Correct Answer: A**
 
 **Explanation:**
@@ -324,7 +367,8 @@ Topic:Read ACL permission allows consumers to read from a topic using the Fetch 
 
 ---
 
-## Question 41
+### Answer  41
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -332,7 +376,8 @@ Cluster:IdempotentWrite ACL operation is required for nontransactional idempoten
 
 ---
 
-## Question 42
+### Answer  42
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -340,7 +385,8 @@ The `principal.builder.class` configuration customizes the principal builder for
 
 ---
 
-## Question 43
+### Answer  43
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -348,7 +394,8 @@ The `ssl.principal.mapping.rules` configuration customizes how the principal is 
 
 ---
 
-## Question 44
+### Answer  44
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -356,7 +403,8 @@ The `allow.everyone.if.no.acl.found=true` configuration grants access to all use
 
 ---
 
-## Question 45
+### Answer  45
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -364,7 +412,8 @@ The delegation token master key (`delegation.token.master.key`) is used by all b
 
 ---
 
-## Question 46
+### Answer  46
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -372,7 +421,8 @@ GSSAPI (Kerberos) requires a secure DNS service for server authentication and ho
 
 ---
 
-## Question 47
+### Answer  47
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -380,7 +430,8 @@ OAuth 2.0 bearer tokens have limited lifetime to reduce credential exposure if t
 
 ---
 
-## Question 48
+### Answer  48
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -388,7 +439,8 @@ The `htpasswd` tool from Apache can be used to generate encrypted passwords for 
 
 ---
 
-## Question 49
+### Answer  49
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -396,7 +448,8 @@ Config providers retrieve passwords from secure external stores or decrypt passw
 
 ---
 
-## Question 50
+### Answer  50
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -404,7 +457,8 @@ Group:Read ACL operation is required for consumers using group management (JoinG
 
 ---
 
-## Question 51
+### Answer  51
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -412,7 +466,8 @@ The Common Name (CN) in SSL certificates identifies the entity owning the certif
 
 ---
 
-## Question 52
+### Answer  52
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -420,7 +475,8 @@ The `authProvider.sasl` configuration sets the ZooKeeper SASL authentication pro
 
 ---
 
-## Question 53
+### Answer  53
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -428,7 +484,8 @@ If a user is compromised and brokers cannot be restarted immediately, Deny ACLs 
 
 ---
 
-## Question 54
+### Answer  54
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -436,7 +493,8 @@ The Prefixed ACL pattern type matches all resources with a specific prefix. For 
 
 ---
 
-## Question 55
+### Answer  55
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -444,7 +502,8 @@ Disk encryption (whole disk or volume encryption) protects data at rest by ensur
 
 ---
 
-## Question 56
+### Answer  56
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -452,7 +511,8 @@ All brokers must share the same `delegation.token.master.key` configuration for 
 
 ---
 
-## Question 57
+### Answer  57
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -460,7 +520,8 @@ The kafka-delegation-tokens tool creates, renews, and expires delegation tokens.
 
 ---
 
-## Question 58
+### Answer  58
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -468,7 +529,8 @@ Deny ACLs have higher precedence than Allow ACLs. AclAuthorizer denies access if
 
 ---
 
-## Question 59
+### Answer  59
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -476,7 +538,8 @@ Quotas control resource utilization to ensure fair allocation among users and pr
 
 ---
 
-## Question 60
+### Answer  60
+
 **Correct Answer: D**
 
 **Explanation:**

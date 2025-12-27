@@ -1,6 +1,11 @@
-# Chapter 12 - Administering Kafka - Solutions and Explanations
+# Chapter 12 - Administering Kafka - Solutions
+CCDAK Practice Test Solutions
+**Based on:** Kafka: The Definitive Guide, 2nd Edition, Chapter 12
 
-## Question 1
+[Back to Test](../../chapter-tests/chapter-12-test.md) | [Main README](../../README.md)
+
+### Answer  1
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -8,7 +13,8 @@ kafka-topics.sh is the primary command-line tool for managing topics in a Kafka 
 
 ----
 
-## Question 2
+### Answer  2
+
 **Correct Answer: A, B, C++**
 
 **Explanation:**
@@ -16,7 +22,8 @@ When creating a new topic, three arguments are required: --topic (the topic name
 
 ----
 
-## Question 3
+### Answer  3
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -24,7 +31,8 @@ It's recommended to avoid using periods in topic names because Kafka's internal 
 
 ----
 
-## Question 4
+### Answer  4
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -32,7 +40,8 @@ The --if-not-exists argument prevents the command from returning an error if the
 
 ----
 
-## Question 5
+### Answer  5
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -40,7 +49,8 @@ The --under-replicated-partitions option displays partitions where one or more r
 
 ----
 
-## Question 6
+### Answer  6
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -48,7 +58,8 @@ The --topics-with-overrides option filters the output to show only topics that h
 
 ----
 
-## Question 7
+### Answer  7
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -56,7 +67,8 @@ It is not possible to reduce the number of partitions for a topic in Kafka. Dele
 
 ----
 
-## Question 8
+### Answer  8
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -64,7 +76,8 @@ The delete.topic.enable configuration must be set to true on brokers to allow to
 
 ----
 
-## Question 9
+### Answer  9
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -72,7 +85,8 @@ Topic deletion should be done one or two at a time due to limitations in how the
 
 ----
 
-## Question 10
+### Answer  10
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -80,7 +94,8 @@ kafka-consumer-groups.sh --list displays all consumer groups in the cluster. Ad 
 
 ----
 
-## Question 11
+### Answer  11
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -88,7 +103,8 @@ The LAG field shows the difference between the consumer's CURRENT-OFFSET (next o
 
 ----
 
-## Question 12
+### Answer  12
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -96,7 +112,8 @@ Before deleting a consumer group, all consumers in that group must be shut down.
 
 ----
 
-## Question 13
+### Answer  13
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -104,7 +121,8 @@ kafka-configs.sh is the tool for dynamically modifying configurations for topics
 
 ----
 
-## Question 14
+### Answer  14
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -112,7 +130,8 @@ The format for dynamically changing topic configuration is: kafka-configs.sh --a
 
 ----
 
-## Question 15
+### Answer  15
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -120,7 +139,8 @@ The retention.ms configuration key controls how long messages are retained in a 
 
 ----
 
-## Question 16
+### Answer  16
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -128,7 +148,8 @@ The producer_bytes_rate quota configuration controls the amount of bytes a clien
 
 ----
 
-## Question 17
+### Answer  17
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -136,7 +157,8 @@ Throttling is enforced on a per-broker basis, making cluster balance critical. I
 
 ----
 
-## Question 18
+### Answer  18
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -144,7 +166,8 @@ kafka-console-producer.sh is the command-line tool for manually producing messag
 
 ----
 
-## Question 19
+### Answer  19
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -152,7 +175,8 @@ By default, the console producer uses a tab character to separate the message ke
 
 ----
 
-## Question 20
+### Answer  20
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -160,7 +184,8 @@ The --from-beginning option makes the console consumer start consuming from the 
 
 ----
 
-## Question 21
+### Answer  21
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -168,7 +193,8 @@ The __consumer_offsets topic is an internal Kafka topic that stores consumer gro
 
 ----
 
-## Question 22
+### Answer  22
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -176,7 +202,8 @@ kafka-leader-election.sh is the tool for triggering preferred replica election. 
 
 ----
 
-## Question 23
+### Answer  23
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -184,7 +211,8 @@ Preferred replica election rebalances partition leadership across brokers by sel
 
 ----
 
-## Question 24
+### Answer  24
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -192,7 +220,8 @@ kafka-reassign-partitions.sh is the tool for manually reassigning partition repl
 
 ----
 
-## Question 25
+### Answer  25
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -200,7 +229,8 @@ The three-step process is: 1) Generate a proposal using --generate with a JSON f
 
 ----
 
-## Question 26
+### Answer  26
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -208,7 +238,8 @@ The --throttle option (specified in bytes/sec) limits the bandwidth used during 
 
 ----
 
-## Question 27
+### Answer  27
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -216,7 +247,8 @@ The --cancel option with kafka-reassign-partitions.sh safely cancels in-progress
 
 ----
 
-## Question 28
+### Answer  28
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -224,7 +256,8 @@ kafka-dump-log.sh decodes log segment files to view individual messages without 
 
 ----
 
-## Question 29
+### Answer  29
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -232,7 +265,8 @@ The --print-data-log option with kafka-dump-log.sh prints the actual message pay
 
 ----
 
-## Question 30
+### Answer  30
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -240,7 +274,8 @@ kafka-replica-verification.sh verifies that replicas for topic partitions are id
 
 ----
 
-## Question 31
+### Answer  31
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -248,7 +283,8 @@ Replica verification has significant cluster impact because it must read all mes
 
 ----
 
-## Question 32
+### Answer  32
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -256,7 +292,8 @@ The controller election information resides in the ZooKeeper znode at /admin/con
 
 ----
 
-## Question 33
+### Answer  33
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -264,7 +301,8 @@ Manually deleting the /admin/controller znode forces the current controller to r
 
 ----
 
-## Question 34
+### Answer  34
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -272,7 +310,8 @@ The unclean.leader.election.enable configuration allows replicas that are not in
 
 ----
 
-## Question 35
+### Answer  35
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -280,7 +319,8 @@ Before manually deleting a topic from ZooKeeper, all brokers in the cluster must
 
 ----
 
-## Question 36
+### Answer  36
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -288,7 +328,8 @@ The --partition option allows the console consumer to consume from a specific pa
 
 ----
 
-## Question 37
+### Answer  37
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -296,7 +337,8 @@ kafka.tools.ChecksumMessageFormatter prints only message checksums, useful for v
 
 ----
 
-## Question 38
+### Answer  38
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -304,7 +346,8 @@ For keyed topics, it's advisable to set the partition count once at creation and
 
 ----
 
-## Question 39
+### Answer  39
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -312,7 +355,8 @@ The --at-min-isr-partitions option shows partitions where the ISR count exactly 
 
 ----
 
-## Question 40
+### Answer  40
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -320,7 +364,8 @@ The --reset-offsets with --dry-run option exports offsets in CSV format with the
 
 ----
 
-## Question 41
+### Answer  41
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -328,7 +373,8 @@ Before importing offsets, all consumers in the group must be stopped. If consume
 
 ----
 
-## Question 42
+### Answer  42
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -336,7 +382,8 @@ The min.insync.replicas configuration specifies the minimum number of replicas t
 
 ----
 
-## Question 43
+### Answer  43
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -344,7 +391,8 @@ The --additional option allows you to add new reassignments to existing ones wit
 
 ----
 
-## Question 44
+### Answer  44
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -352,7 +400,8 @@ To change replication factor, manually craft a JSON file with the desired replic
 
 ----
 
-## Question 45
+### Answer  45
+
 **Correct Answer: D++**
 
 **Explanation:**
@@ -360,7 +409,8 @@ Restarting a broker safely removes leadership from it as the broker transfers le
 
 ----
 
-## Question 46
+### Answer  46
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -368,7 +418,8 @@ The --unavailable-partitions option shows partitions without a leader, indicatin
 
 ----
 
-## Question 47
+### Answer  47
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -376,7 +427,8 @@ kafka-preferred-replica-election.sh has been deprecated in favor of kafka-leader
 
 ----
 
-## Question 48
+### Answer  48
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -384,7 +436,8 @@ The compression.type configuration controls the compression algorithm used by th
 
 ----
 
-## Question 49
+### Answer  49
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -392,7 +445,8 @@ The CLIENT-ID field displays the string provided by the client to identify itsel
 
 ----
 
-## Question 50
+### Answer  50
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -400,7 +454,8 @@ During partition reassignment, the replication factor temporarily increases as n
 
 ----
 
-## Question 51
+### Answer  51
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -408,7 +463,8 @@ The --add-config-file argument allows configuration changes to be specified from
 
 ----
 
-## Question 52
+### Answer  52
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -416,7 +472,8 @@ The cleanup.policy configuration determines whether messages are deleted based o
 
 ----
 
-## Question 53
+### Answer  53
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -424,7 +481,8 @@ Topic metadata in ZooKeeper is stored at /brokers/topics/<topic-name>. This path
 
 ----
 
-## Question 54
+### Answer  54
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -432,7 +490,8 @@ The default message formatter is kafka.tools.DefaultMessageFormatter, which outp
 
 ----
 
-## Question 55
+### Answer  55
+
 **Correct Answer: C++**
 
 **Explanation:**
@@ -440,7 +499,8 @@ Topic deletion is asynchronous. After marking a topic for deletion, the controll
 
 ----
 
-## Question 56
+### Answer  56
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -448,7 +508,8 @@ The segment.ms configuration determines how frequently log segments are rotated 
 
 ----
 
-## Question 57
+### Answer  57
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -456,7 +517,8 @@ The --sync option causes the console producer to send messages synchronously, wa
 
 ----
 
-## Question 58
+### Answer  58
+
 **Correct Answer: B++**
 
 **Explanation:**
@@ -464,7 +526,8 @@ The controller_mutations_rate quota controls the rate at which create topics, cr
 
 ----
 
-## Question 59
+### Answer  59
+
 **Correct Answer: A++**
 
 **Explanation:**
@@ -472,7 +535,8 @@ The --disable-rack-aware option overrides rack-aware placement constraints durin
 
 ----
 
-## Question 60
+### Answer  60
+
 **Correct Answer: B++**
 
 **Explanation:**

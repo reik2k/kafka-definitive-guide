@@ -1,10 +1,14 @@
 # Chapter 09 – Building Data Pipelines – Solutions and Explanations
 
-> **Answer Key with Detailed Explanations** | CCDAK Preparation Material
+CCDAK Practice Test Solutions
+**Based on:** Kafka: The Definitive Guide, 2nd Edition, Chapter 9
+
+[Back to Test](../../chapter-tests/chapter-09-test.md) | [Main README](../../README.md)
 
 ---
 
-## Question 1
+### Answer  1
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -12,7 +16,8 @@ The chapter describes two main use cases: (1) Kafka as one of the two endpoints 
 
 ---
 
-## Question 2
+### Answer  2
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -20,7 +25,8 @@ Kafka's main value is its ability to serve as a very large, reliable buffer betw
 
 ---
 
-## Question 3
+### Answer  3
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -28,7 +34,8 @@ Kafka allows producers and consumers to have different timeliness and availabili
 
 ---
 
-## Question 4
+### Answer  4
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -36,7 +43,8 @@ Kafka provides at-least-once delivery guarantee on its own. Each event from the 
 
 ---
 
-## Question 5
+### Answer  5
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -44,7 +52,8 @@ Kafka can achieve exactly-once delivery when combined with external data stores 
 
 ---
 
-## Question 6
+### Answer  6
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -52,7 +61,8 @@ When producer throughput exceeds consumer throughput, data accumulates in Kafka 
 
 ---
 
-## Question 7
+### Answer  7
+
 **Correct Answer: C**
 
 **Explanation:**
@@ -60,7 +70,8 @@ Kafka itself and the Connect API are completely agnostic to data formats. Produc
 
 ---
 
-## Question 8
+### Answer  8
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -68,7 +79,8 @@ ETL stands for Extract-Transform-Load. The data pipeline is responsible for tran
 
 ---
 
-## Question 9
+### Answer  9
+
 **Correct Answer: B**
 
 **Explanation:**
@@ -76,7 +88,8 @@ The main drawback is that transformations in the pipeline may tie the hands of d
 
 ---
 
-## Question 10
+### Answer  10
+
 **Correct Answer: B**
 
 **Explanation:**
