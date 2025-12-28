@@ -75,7 +75,23 @@ Kafka brokers are configured with listeners on one or more endpoints and accept 
 
 ### TLS/SSL
 
-TLS is one of the most widely used cryptographic protocols on the public internet. Application protocols like HTTP, SMTP, and FTP rely on TLS to provide privacy and integrity of data in transit. Session keys generated during the TLS handshake enable symmetric encryption with higher performance for subsequent data transfer.
+TLS is one of the most widely used cryptographic protocols on the public internet. Application protocols like HTTP, SMTP, and FTP rely on TLS to provide privacy 
+
+Example broker configuration for SSL listeners:
+
+```
+listeners=EXTERNAL://:9092,INTERNAL://10.0.0.2:9093,BROKER://10.0.0.2:9094
+advertised.listeners=EXTERNAL://broker1.example.com:9092,INTERNAL://broker1.local:9093,BROKER://broker1.local:9094
+listener.security.protocol.map=EXTERNAL:SASL_SSL,INTERNAL:SSL,BROKER:SSL
+inter.broker.listener.name=BROKER
+```
+
+Client configuration:
+
+```
+security.protocol=SASL_SSL
+bootstrap.servers=broker1.example.com:9092,broker2.example.com:9092
+```and integrity of data in transit. Session keys generated during the TLS handshake enable symmetric encryption with higher performance for subsequent data transfer.
 
 ## Authentication
 
@@ -90,6 +106,77 @@ When Kafka is configured with SSL or SASL_SSL as the security protocol for a lis
 - Clients require a trust store containing the broker certificate or CA certificate
 - Broker certificates should contain the broker hostname as a Subject Alternative Name (SAN)
 - Hostname verification is enabled by default to prevent man-in-the-middle attacks
+
+**Generate self-signed CA for brokers:**
+
+```bash
+keytool -genkeypair -keyalg RSA -keysize 2048 -keystore server.ca.p12 \
+  -storetype PKCS12 -storepass server-ca-password -keypass server-ca-password \
+  -alias ca -dname "CN=BrokerCA" -ext bc=ca:true -validity 365
+
+keytool -export -file server.ca.crt -keystore server.ca.p12 \
+  -storetype PKCS12 -storepass server-ca-password -alias ca -rfc
+```
+
+**Create key stores for brokers:**
+
+```bash
+keytool -genkey -keyalg RSA -keysize 2048 -keystore server.ks.p12 \
+  -storepass server-ks-password -keypass server-ks-password -alias server \
+  -storetype PKCS12 -dname "CN=Kafka,O=Confluent,C=GB" -validity 365
+
+keytool -certreq -file server.csr -keystore server.ks.p12 -storetype PKCS12 \
+  -storepass server-ks-password -keypass server-ks-password -alias server
+
+keytool -gencert -infile server.csr -outfile server.crt \
+  -keystore server.ca.p12 -storetype PKCS12 -storepass server-ca-password \
+  -alias ca -ext SAN=DNS:broker1.example.com -validity 365
+
+cat server.crt server.ca.crt > serverchain.crt
+
+keytool -importcert -file serverchain.crt -keystore server.ks.p12 \
+  -storepass server-ks-password -keypass server-ks-password -alias server \
+  -storetype PKCS12 -noprompt
+```
+
+**Broker trust store:**
+
+```bash
+keytool -import -file server.ca.crt -keystore server.ts.p12 \
+  -storetype PKCS12 -storepass server-ts-password -alias server -noprompt
+```
+
+**Client trust store:**
+
+```bash
+keytool -import -file server.ca.crt -keystore client.ts.p12 \
+  -storetype PKCS12 -storepass client-ts-password -alias ca -noprompt
+```
+
+**Broker SSL configuration:**
+
+```
+ssl.keystore.location=/path/to/server.ks.p12
+ssl.keystore.password=server-ks-password
+ssl.key.password=server-ks-password
+ssl.keystore.type=PKCS12
+ssl.truststore.location=/path/to/server.ts.p12
+ssl.truststore.password=server-ts-password
+ssl.truststore.type=PKCS12
+ssl.client.auth=required
+```
+
+**Client SSL configuration:**
+
+```
+ssl.truststore.location=/path/to/client.ts.p12
+ssl.truststore.password=client-ts-password
+ssl.truststore.type=PKCS12
+ssl.keystore.location=/path/to/client.ks.p12
+ssl.keystore.password=client-ks-password
+ssl.key.password=client-ks-password
+ssl.keystore.type=PKCS12
+```
 
 ### SASL
 
@@ -143,7 +230,52 @@ authorizer.class.name=kafka.security.authorizer.AclAuthorizer
 - Operation: Describe|Create|Delete|Alter|Read|Write|DescribeConfigs|AlterConfigs
 - Permission type: Allow|Deny (Deny has higher precedence)
 - Principal: Kafka principal represented as <principalType>:<principalName>
-- Host: Source IP address or `*` if all hosts are authorized
+- Host: Source IP address or `*` if all hosts are 
+
+**Table 11-1: Access granted for each Kafka ACL**
+
+| ACL | Kafka Requests | Notes |
+|-----|----------------|-------|
+| `Cluster:ClusterAction` | Inter-broker requests, controller requests, replica fetch | Should only be granted to brokers |
+| `Cluster:Create` | `CreateTopics`, auto-topic creation | Use `Topic:Create` for fine-grained control |
+| `Cluster:Alter` | `CreateAcls`, `DeleteAcls`, `AlterReplicaLogDirs` | |
+| `Cluster:AlterConfigs` | `AlterConfigs`, `IncrementalAlterConfigs`, `AlterClientQuotas` | |
+| `Cluster:Describe` | `DescribeAcls`, `DescribeLogDirs`, `ListGroups` | Use `Group:Describe` for fine-grained control |
+| `Cluster:DescribeConfigs` | `DescribeConfigs`, `DescribeClientQuotas` | |
+| `Cluster:IdempotentWrite` | Idempotent `InitProducerId`, `Produce` requests | Only for nontransactional idempotent producers |
+| `Topic:Create` | `CreateTopics`, auto-topic creation | |
+| `Topic:Delete` | `DeleteTopics`, `DeleteRecords` | |
+| `Topic:Alter` | `CreatePartitions` | |
+| `Topic:AlterConfigs` | `AlterConfigs`, `IncrementalAlterConfigs` for topics | |
+| `Topic:Describe` | Metadata for topic, `OffsetForLeaderEpoch`, `ListOffset` | |
+| `Topic:DescribeConfigs` | `DescribeConfigs` for topics | |
+| `Topic:Read` | Consumer `Fetch`, `OffsetCommit`, `TxnOffsetCommit` | Should be granted to consumers |
+| `Topic:Write` | `Produce`, `AddPartitionToTxn` | Should be granted to producers |
+| `Group:Read` | `JoinGroup`, `SyncGroup`, `LeaveGroup`, `Heartbeat` | Required for consumer group management |
+| `Group:Describe` | `FindCoordinator`, `DescribeGroup`, `ListGroups` | |
+| `Group:Delete` | `DeleteGroups`, `OffsetDelete` | |
+| `TransactionalId:Write` | Transactional `Produce`, `InitProducerId` | Required for transactional producers |
+| `TransactionalId:Describe` | `FindCoordinator` for transaction coordinator | |
+| `DelegationToken:Describe` | `DescribeTokens` | |
+
+**Example ACL commands:**
+
+```bash
+# Grant ClusterAction to broker
+bin/kafka-acls.sh --add --cluster --operation ClusterAction \
+  --authorizer-properties zookeeper.connect=localhost:2181 \
+  --allow-principal User:kafka
+
+# Grant producer access to topic
+bin/kafka-acls.sh --bootstrap-server localhost:9092 \
+  --command-config admin.props --add --topic customerOrders \
+  --producer --allow-principal User:Alice
+
+# Grant prefixed read access
+bin/kafka-acls.sh --bootstrap-server localhost:9092 \
+  --command-config admin.props --add --resource-pattern-type PREFIXED \
+  --topic customer --operation Read --allow-principal User:Bob
+```authorized
 
 ### Customizing Authorization
 
