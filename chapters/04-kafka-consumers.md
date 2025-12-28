@@ -1,57 +1,92 @@
 Chapter 4. Kafka Consumers: Reading Data from Kafka
 Applications that need to read data from Kafka use a KafkaConsumer to subscribe to Kafka topics and receive messages from these topics. Reading data from Kafka is a bit different than reading data from other messaging systems, and there are a few unique concepts and ideas involved. It can be difficult to understand how to use the Consumer API without understanding these concepts first. We’ll start by explaining some of the important concepts, and then we’ll go through some examples that show the different ways Consumer APIs can be used to implement applications with varying requirements.
 
-Kafka Consumer Concepts
+## Table of Contents
+
+- [Kafka Consumer Concepts](#kafka-consumer-concepts)
+  - [Consumers and Consumer Groups](#consumers-and-consumer-groups)
+  - [Consumer Groups and Partition Rebalance](#consumer-groups-and-partition-rebalance)
+  - [Static Group Membership](#static-group-membership)
+- [Creating a Kafka Consumer](#creating-a-kafka-consumer)
+- [Subscribing to Topics](#subscribing-to-topics)
+- [The Poll Loop](#the-poll-loop)
+  - [Thread Safety](#thread-safety)
+- [Configuring Consumers](#configuring-consumers)
+- [Commits and Offsets](#commits-and-offsets)
+  - [Automatic Commit](#automatic-commit)
+  - [Commit Current Offset](#commit-current-offset)
+  - [Asynchronous Commit](#asynchronous-commit)
+  - [Combining Synchronous and Asynchronous Commits](#combining-synchronous-and-asynchronous-commits)
+  - [Committing a Specified Offset](#committing-a-specified-offset)
+- [Rebalance Listeners](#rebalance-listeners)
+- [Consuming Records with Specific Offsets](#consuming-records-with-specific-offsets)
+- [But How Do We Exit?](#but-how-do-we-exit)
+- [Deserializers](#deserializers)
+  - [Custom Deserializers](#custom-deserializers)
+  - [Using Avro Deserialization with Kafka Consumer](#using-avro-deserialization-with-kafka-consumer)
+- [Standalone Consumer: Why and How to Use a Consumer Without a Group](#standalone-consumer-why-and-how-to-use-a-consumer-without-a-group)
+- [Summary](#summary)
+
+## Kafka Consumer Concepts
 To understand how to read data from Kafka, you first need to understand its consumers and consumer groups. The following sections cover those concepts.
 
-Consumers and Consumer Groups
+### Consumers and Consumer Groups
 Suppose you have an application that needs to read messages from a Kafka topic, run some validations against them, and write the results to another data store. In this case, your application will create a consumer object, subscribe to the appropriate topic, and start receiving messages, validating them, and writing the results. This may work well for a while, but what if the rate at which producers write messages to the topic exceeds the rate at which your application can validate them? If you are limited to a single consumer reading and processing the data, your application may fall further and further behind, unable to keep up with the rate of incoming messages. Obviously there is a need to scale consumption from topics. Just like multiple producers can write to the same topic, we need to allow multiple consumers to read from the same topic, splitting the data among them.
 
 Kafka consumers are typically part of a consumer group. When multiple consumers are subscribed to a topic and belong to the same consumer group, each consumer in the group will receive messages from a different subset of the partitions in the topic.
 
 Let’s take topic T1 with four partitions. Now suppose we created a new consumer, C1, which is the only consumer in group G1, and use it to subscribe to topic T1. Consumer C1 will get all messages from all four T1 partitions. See Figure 4-1.
 
-kdg2 0401
-Figure 4-1. One consumer group with four partitions
+![Figure 4-1](../images/ch04/kdg2_0401.png)
+*Figure 4-1. One consumer group with four partitions*
+
 If we add another consumer, C2, to group G1, each consumer will only get messages from two partitions. Perhaps messages from partition 0 and 2 go to C1, and messages from partitions 1 and 3 go to consumer C2. See Figure 4-2.
 
-kdg2 0402
-Figure 4-2. Four partitions split to two consumers in a group
+![Figure 4-2](../images/ch04/kdg2_0402.png)
+*Figure 4-2. Four partitions split to two consumers in a group*
+
 If G1 has four consumers, then each will read messages from a single partition. See Figure 4-3.
 
-kdg2 0403
-Figure 4-3. Four consumers in a group with one partition each
+![Figure 4-3](../images/ch04/kdg2_0403.png)
+*Figure 4-3. Four consumers in a group with one partition each*
+
 If we add more consumers to a single group with a single topic than we have partitions, some of the consumers will be idle and get no messages at all. See Figure 4-4.
 
-kdg2 0404
-Figure 4-4. More consumers in a group than partitions means idle consumers
+![Figure 4-4](../images/ch04/kdg2_0404.png)
+*Figure 4-4. More consumers in a group than partitions means idle consumers*
+
 The main way we scale data consumption from a Kafka topic is by adding more consumers to a consumer group. It is common for Kafka consumers to do high-latency operations such as write to a database or a time-consuming computation on the data. In these cases, a single consumer can’t possibly keep up with the rate data flows into a topic, and adding more consumers that share the load by having each consumer own just a subset of the partitions and messages is our main method of scaling. This is a good reason to create topics with a large number of partitions—it allows adding more consumers when the load increases. Keep in mind that there is no point in adding more consumers than you have partitions in a topic—some of the consumers will just be idle. Chapter 2 includes some suggestions on how to choose the number of partitions in a topic.
 
 In addition to adding consumers in order to scale a single application, it is very common to have multiple applications that need to read data from the same topic. In fact, one of the main design goals in Kafka was to make the data produced to Kafka topics available for many use cases throughout the organization. In those cases, we want each application to get all of the messages, rather than just a subset. To make sure an application gets all the messages in a topic, ensure the application has its own consumer group. Unlike many traditional messaging systems, Kafka scales to a large number of consumers and consumer groups without reducing performance.
 
 In the previous example, if we add a new consumer group (G2) with a single consumer, this consumer will get all the messages in topic T1 independent of what G1 is doing. G2 can have more than a single consumer, in which case they will each get a subset of partitions, just like we showed for G1, but G2 as a whole will still get all the messages regardless of other consumer groups. See Figure 4-5.
 
-kdg2 0405
-Figure 4-5. Adding a new consumer group, both groups receive all messages
-To summarize, you create a new consumer group for each application that needs all the messages from one or more topics. You add consumers to an existing consumer group to scale the reading and processing of messages from the topics, so each additional consumer in a group will only get a subset of the messages.
+![Figure 4-5](../images/ch04/kdg2_0405.png)
+*Figure 4-5. Adding a new consumer group, both groups receive all messages*
 
-Consumer Groups and Partition Rebalance
+To summarize, you create a new consumer group for each application that 
+needs all the messages from one or more topics. You add consumers to an existing consumer group to scale the reading and processing of messages from the topics, so each additional consumer in a group will only get a subset of the messages.
+
+### Consumer Groups and Partition Rebalance
 As we saw in the previous section, consumers in a consumer group share ownership of the partitions in the topics they subscribe to. When we add a new consumer to the group, it starts consuming messages from partitions previously consumed by another consumer. The same thing happens when a consumer shuts down or crashes; it leaves the group, and the partitions it used to consume will be consumed by one of the remaining consumers. Reassignment of partitions to consumers also happens when the topics the consumer group is consuming are modified (e.g., if an administrator adds new partitions).
 
 Moving partition ownership from one consumer to another is called a rebalance. Rebalances are important because they provide the consumer group with high availability and scalability (allowing us to easily and safely add and remove consumers), but in the normal course of events they can be fairly undesirable.
 
 There are two types of rebalances, depending on the partition assignment strategy that the consumer group uses:1
 
-Eager rebalances
+### Eager rebalances
 During an eager rebalance, all consumers stop consuming, give up their ownership of all partitions, rejoin the consumer group, and get a brand-new partition assignment. This is essentially a short window of unavailability of the entire consumer group. The length of the window depends on the size of the consumer group as well as on several configuration parameters. Figure 4-6 shows how eager rebalances have two distinct phases: first, all consumers give up their partition assigning, and second, after they all complete this and rejoin the group, they get new partition assignments and can resume consuming.
 
-kdg2 0406
-Figure 4-6. Eager rebalance revokes all partitions, pauses consumption, and reassigns them
-Cooperative rebalances
+![Figure 4-6](../images/ch04/kdg2_0406.png)
+*Figure 4-6. Eager rebalance revokes all partitions, pauses consumption, and reassigns them*
+
+### Cooperative rebalances
 Cooperative rebalances (also called incremental rebalances) typically involve reassigning only a small subset of the partitions from one consumer to another, and allowing consumers to continue processing records from all the partitions that are not reassigned. This is achieved by rebalancing in two or more phases. Initially, the consumer group leader informs all the consumers that they will lose ownership of a subset of their partitions, then the consumers stop consuming from these partitions and give up their ownership in them. In the second phase, the consumer group leader assigns these now orphaned partitions to their new owners. This incremental approach may take a few iterations until a stable partition assignment is achieved, but it avoids the complete “stop the world” unavailability that occurs with the eager approach. This is especially important in large consumer groups where rebalances can take a significant amount of time. Figure 4-7 shows how cooperative rebalances are incremental and that only a subset of the consumers and partitions are involved.
 
-kdg2 0407
-Figure 4-7. Cooperative rebalance only pauses consumption for the subset of partitions that will be reassigned
+![Figure 4-7](../images/ch04/kdg2_0407.png)
+*Figure 4-7. Cooperative rebalance only pauses consumption for the subset 
+of partitions that will be reassigned*
+
 Consumers maintain membership in a consumer group and ownership of the partitions assigned to them by sending heartbeats to a Kafka broker designated as the group coordinator (this broker can be different for different consumer groups). The heartbeats are sent by a background thread of the consumer, and as long as the consumer is sending heartbeats at regular intervals, it is assumed to be alive.
 
 If the consumer stops sending heartbeats for long enough, its session will timeout and the group coordinator will consider it dead and trigger a rebalance. If a consumer crashed and stopped processing messages, it will take the group coordinator a few seconds without heartbeats to decide it is dead and trigger the rebalance. During those seconds, no messages will be processed from the partitions owned by the dead consumer. When closing a consumer cleanly, the consumer will notify the group coordinator that it is leaving, and the group coordinator will trigger a rebalance immediately, reducing the gap in processing. Later in this chapter, we will discuss configuration options that control heartbeat frequency, session timeouts, and other configuration parameters that can be used to fine-tune the consumer behavior.
@@ -61,7 +96,7 @@ When a consumer wants to join a group, it sends a JoinGroup request to the group
 
 Kafka has few built-in partition assignment policies, which we will discuss in more depth in the configuration section. After deciding on the partition assignment, the consumer group leader sends the list of assignments to the GroupCoordinator, which sends this information to all the consumers. Each consumer only sees its own assignment—the leader is the only client process that has the full list of consumers in the group and their assignments. This process repeats every time a rebalance happens.
 
-Static Group Membership
+### Static Group Membership
 By default, the identity of a consumer as a member of its consumer group is transient. When consumers leave a consumer group, the partitions that were assigned to the consumer are revoked, and when it rejoins, it is assigned a new member ID and a new set of partitions through the rebalance protocol.
 
 All this is true unless you configure a consumer with a unique group.instance.id, which makes the consumer a static member of the group. When a consumer first joins a consumer group as a static member of the group, it is assigned a set of partitions according to the partition assignment strategy the group is using, as normal. However, when this consumer shuts down, it does not automatically leave the group—it remains a member of the group until its session times out. When the consumer rejoins the group, it is recognized with its static identity and is reassigned the same partitions it previously held without triggering a rebalance. The group coordinator that caches the assignment for each member of the group does not need to trigger a rebalance but can just send the cache assignment to the rejoining static member.
@@ -72,7 +107,7 @@ Static group membership is useful when your application maintains local state or
 
 It is important to note that static members of consumer groups do not leave the group proactively when they shut down, and detecting when they are “really gone” depends on the session.timeout.ms configuration. You’ll want to set it high enough to avoid triggering rebalances on a simple application restart but low enough to allow automatic reassignment of their partitions when there is more significant downtime, to avoid large gaps in processing these partitions.
 
-Creating a Kafka Consumer
+## Creating a Kafka Consumer
 The first step to start consuming records is to create a KafkaConsumer instance. Creating a KafkaConsumer is very similar to creating a KafkaProducer—you create a Java Properties instance with the properties you want to pass to the consumer. We will discuss all the properties in depth later in the chapter. To start, we just need to use the three mandatory properties: bootstrap.servers, key.deserializer, and value.deserializer.
 
 The first property, bootstrap.servers, is the connection string to a Kafka cluster. It is used the exact same way as in KafkaProducer (refer to Chapter 3 for details on how this is defined). The other two properties, key.deserializer and value.​dese⁠rial⁠izer, are similar to the serializers defined for the producer, but rather than specifying classes that turn Java objects to byte arrays, you need to specify classes that can take a byte array and turn it into a Java object.
@@ -80,7 +115,7 @@ The first property, bootstrap.servers, is the connection string to a Kafka clust
 There is a fourth property, which is not strictly mandatory but very commonly used. The property is group.id, and it specifies the consumer group the KafkaConsumer instance belongs to. While it is possible to create consumers that do not belong to any consumer group, this is uncommon, so for most of the chapter we will assume the consumer is part of a group.
 
 The following code snippet shows how to create a KafkaConsumer:
-
+```java
 Properties props = new Properties();
 props.put("bootstrap.servers", "broker1:9092,broker2:9092");
 props.put("group.id", "CountryCounter");
@@ -91,32 +126,34 @@ props.put("value.deserializer",
 
 KafkaConsumer<String, String> consumer =
     new KafkaConsumer<String, String>(props);
+```
 Most of what you see here should be familiar if you’ve read Chapter 3 on creating producers. We assume that the records we consume will have String objects as both the key and the value of the record. The only new property here is group.id, which is the name of the consumer group this consumer belongs to.
 
-Subscribing to Topics
-Once we create a consumer, the next step is to subscribe to one or more topics. The subscribe() method takes a list of topics as a parameter, so it’s pretty simple to use:
-
-consumer.subscribe(Collections.singletonList("customerCountries")); 1
-1
-Here we simply create a list with a single element: the topic name customerCountries.
+## Subscribing to Topics
+Once we create a consumer, the next step is to subscribe to one or more topics. The ``subscribe()`` method takes a list of topics as a parameter, so it’s pretty simple to use:
+```java
+consumer.subscribe(Collections.singletonList("customerCountries")); //1
+```
+> *1 Here we simply create a list with a single element: the topic name customerCountries.*
 
 It is also possible to call subscribe with a regular expression. The expression can match multiple topic names, and if someone creates a new topic with a name that matches, a rebalance will happen almost immediately and the consumers will start consuming from the new topic. This is useful for applications that need to consume from multiple topics and can handle the different types of data the topics will contain. Subscribing to multiple topics using a regular expression is most commonly used in applications that replicate data between Kafka and another system or streams processing applications.
 
 For example, to subscribe to all test topics, we can call:
-
+```java
 consumer.subscribe(Pattern.compile("test.*"));
+```
 Warning
 If your Kafka cluster has large number of partitions, perhaps 30,000 or more, you should be aware that the filtering of topics for the subscription is done on the client side. This means that when you subscribe to a subset of topics via a regular expression rather than via an explicit list, the consumer will request the list of all topics and their partitions from the broker in regular intervals. The client will then use this list to detect new topics that it should include in its subscription and subscribe to them. When the topic list is large and there are many consumers, the size of the list of topics and partitions is significant, and the regular expression subscription has significant overhead on the broker, client, and network. There are cases where the bandwidth used by the topic metadata is larger than the bandwidth used to send data. This also means that in order to subscribe with a regular expression, the client needs permissions to describe all topics in the cluster—that is, a full describe grant on the entire cluster.
 
-The Poll Loop
+## The Poll Loop
 At the heart of the Consumer API is a simple loop for polling the server for more data. The main body of a consumer will look as follows:
 
 Duration timeout = Duration.ofMillis(100);
+```java
+while (true) { //1
+    ConsumerRecords<String, String> records = consumer.poll(timeout); //2
 
-while (true) { 1
-    ConsumerRecords<String, String> records = consumer.poll(timeout); 2
-
-    for (ConsumerRecord<String, String> record : records) { 3
+    for (ConsumerRecord<String, String> record : records) { //3
         System.out.printf("topic = %s, partition = %d, offset = %d, " +
                         "customer = %s, country = %s\n",
         record.topic(), record.partition(), record.offset(),
@@ -128,104 +165,106 @@ while (true) { 1
         custCountryMap.put(record.value(), updatedCount);
 
         JSONObject json = new JSONObject(custCountryMap);
-        System.out.println(json.toString()); 4
+        System.out.println(json.toString()); //4
     }
 }
-1
-This is indeed an infinite loop. Consumers are usually long-running applications that continuously poll Kafka for more data. We will show later in the chapter how to cleanly exit the loop and close the consumer.
+```
+>1
+*This is indeed an infinite loop. Consumers are usually long-running applications that continuously poll Kafka for more data. We will show later in the chapter how to cleanly exit the loop and close the consumer.*
 
-2
-This is the most important line in the chapter. The same way that sharks must keep moving or they die, consumers must keep polling Kafka or they will be considered dead and the partitions they are consuming will be handed to another consumer in the group to continue consuming. The parameter we pass to poll() is a timeout interval and controls how long poll() will block if data is not available in the consumer buffer. If this is set to 0 or if there are records available already, poll() will return immediately; otherwise, it will wait for the specified number of milliseconds.
+>2
+*This is the most important line in the chapter. The same way that sharks must keep moving or they die, consumers must keep polling Kafka or they will be considered dead and the partitions they are consuming will be handed to another consumer in the group to continue consuming. The parameter we pass to poll() is a timeout interval and controls how long poll() will block if data is not available in the consumer buffer. If this is set to 0 or if there are records available already, poll() will return immediately; otherwise, it will wait for the specified number of milliseconds.*
 
-3
-poll() returns a list of records. Each record contains the topic and partition the record came from, the offset of the record within the partition, and, of course, the key and the value of the record. Typically, we want to iterate over the list and process the records individually.
+>3
+*poll() returns a list of records. Each record contains the topic and partition the record came from, the offset of the record within the partition, and, of course, the key and the value of the record. Typically, we want to iterate over the list and process the records individually.*
 
-4
-Processing usually ends in writing a result in a data store or updating a stored record. Here, the goal is to keep a running count of customers from each country, so we update a hash table and print the result as JSON. A more realistic example would store the updates result in a data store.
+>4
+*Processing usually ends in writing a result in a data store or updating a stored record. Here, the goal is to keep a running count of customers from each country, so we update a hash table and print the result as JSON. A more realistic example would store the updates result in a data store.*
 
-The poll loop does a lot more than just get data. The first time you call poll() with a new consumer, it is responsible for finding the GroupCoordinator, joining the consumer group, and receiving a partition assignment. If a rebalance is triggered, it will be handled inside the poll loop as well, including related callbacks. This means that almost everything that can go wrong with a consumer or in the callbacks used in its listeners is likely to show up as an exception thrown by poll().
+The poll loop does a lot more than just get data. The first time you call ``poll()`` with a new consumer, it is responsible for finding the GroupCoordinator, joining the consumer group, and receiving a partition assignment. If a rebalance is triggered, it will be handled inside the poll loop as well, including related callbacks. This means that almost everything that can go wrong with a consumer or in the callbacks used in its listeners is likely to show up as an exception thrown by ``poll()``.
 
 Keep in mind that if poll() is not invoked for longer than max.poll.interval.ms, the consumer will be considered dead and evicted from the consumer group, so avoid doing anything that can block for unpredictable intervals inside the poll loop.
 
-Thread Safety
+### Thread Safety
 You can’t have multiple consumers that belong to the same group in one thread, and you can’t have multiple threads safely use the same consumer. One consumer per thread is the rule. To run multiple consumers in the same group in one application, you will need to run each in its own thread. It is useful to wrap the consumer logic in its own object and then use Java’s ExecutorService to start multiple threads, each with its own consumer. The Confluent blog has a tutorial that shows how to do just that.
 
-Warning
-In older versions of Kafka, the full method signature was poll(long); this signature is now deprecated and the new API is poll(Duration). In addition to the change of argument type, the semantics of how the method blocks subtly changed. The original method, poll(long), will block as long as it takes to get the needed metadata from Kafka, even if this is longer than the timeout duration. The new method, poll(Duration), will adhere to the timeout restrictions and not wait for metadata. If you have existing consumer code that uses poll(0) as a method to force Kafka to get the metadata without consuming any records (a rather common hack), you can’t just change it to poll(Duration.ofMillis(0)) and expect the same behavior. You’ll need to figure out a new way to achieve your goals. Often the solution is placing the logic in the rebalanceListener.onPartitionAssignment() method, which is guaranteed to get called after you have metadata for the assigned partitions but before records start arriving. Another solution was documented by Jesse Anderson in his blog post “Kafka’s Got a Brand-New Poll”.
+>Warning
+>
+>*In older versions of Kafka, the full method signature was poll(long); this signature is now deprecated and the new API is poll(Duration). In addition to the change of argument type, the semantics of how the method blocks subtly changed. The original method, poll(long), will block as long as it takes to get the needed metadata from Kafka, even if this is longer than the timeout duration. The new method, poll(Duration), will adhere to the timeout restrictions and not wait for metadata. If you have existing consumer code that uses poll(0) as a method to force Kafka to get the metadata without consuming any records (a rather common hack), you can’t just change it to poll(Duration.ofMillis(0)) and expect the same behavior. You’ll need to figure out a new way to achieve your goals. Often the solution is placing the logic in the rebalanceListener.onPartitionAssignment() method, which is guaranteed to get called after you have metadata for the assigned partitions but before records start arriving. Another solution was documented by Jesse Anderson in his blog post “Kafka’s Got a Brand-New Poll”.*
 
 Another approach can be to have one consumer populate a queue of events and have multiple worker threads perform work from this queue. You can see an example of this pattern in a blog post from Igor Buzatović.
 
-Configuring Consumers
+## Configuring Consumers
 So far we have focused on learning the Consumer API, but we’ve only looked at a few of the configuration properties—just the mandatory bootstrap.servers, group.id, key.deserializer, and value.deserializer. All of the consumer configuration is documented in the Apache Kafka documentation. Most of the parameters have reasonable defaults and do not require modification, but some have implications on the performance and availability of the consumers. Let’s take a look at some of the more important properties.
 
-fetch.min.bytes
+``fetch.min.bytes``
 This property allows a consumer to specify the minimum amount of data that it wants to receive from the broker when fetching records, by default one byte. If a broker receives a request for records from a consumer but the new records amount to fewer bytes than fetch.min.bytes, the broker will wait until more messages are available before sending the records back to the consumer. This reduces the load on both the consumer and the broker, as they have to handle fewer back-and-forth messages in cases where the topics don’t have much new activity (or for lower-activity hours of the day). You will want to set this parameter higher than the default if the consumer is using too much CPU when there isn’t much data available, or reduce load on the brokers when you have a large number of consumers—although keep in mind that increasing this value can increase latency for low-throughput cases.
 
-fetch.max.wait.ms
+``fetch.max.wait.ms``
 By setting fetch.min.bytes, you tell Kafka to wait until it has enough data to send before responding to the consumer. fetch.max.wait.ms lets you control how long to wait. By default, Kafka will wait up to 500 ms. This results in up to 500 ms of extra latency in case there is not enough data flowing to the Kafka topic to satisfy the minimum amount of data to return. If you want to limit the potential latency (usually due to SLAs controlling the maximum latency of the application), you can set fetch.max.wait.ms to a lower value. If you set fetch.max.wait.ms to 100 ms and fetch.min.bytes to 1 MB, Kafka will receive a fetch request from the consumer and will respond with data either when it has 1 MB of data to return or after 100 ms, whichever happens first.
 
-fetch.max.bytes
+``fetch.max.bytes``
 This property lets you specify the maximum bytes that Kafka will return whenever the consumer polls a broker (50 MB by default). It is used to limit the size of memory that the consumer will use to store data that was returned from the server, irrespective of how many partitions or messages were returned. Note that records are sent to the client in batches, and if the first record-batch that the broker has to send exceeds this size, the batch will be sent and the limit will be ignored. This guarantees that the consumer can continue making progress. It’s worth noting that there is a matching broker configuration that allows the Kafka administrator to limit the maximum fetch size as well. The broker configuration can be useful because requests for large amounts of data can result in large reads from disk and long sends over the network, which can cause contention and increase load on the broker.
 
-max.poll.records
+``max.poll.records``
 This property controls the maximum number of records that a single call to poll() will return. Use this to control the amount of data (but not the size of data) your application will need to process in one iteration of the poll loop.
 
-max.partition.fetch.bytes
+``max.partition.fetch.bytes``
 This property controls the maximum number of bytes the server will return per partition (1 MB by default). When KafkaConsumer.poll() returns ConsumerRecords, the record object will use at most max.partition.fetch.bytes per partition assigned to the consumer. Note that controlling memory usage using this configuration can be quite complex, as you have no control over how many partitions will be included in the broker response. Therefore, we highly recommend using fetch.max.bytes instead, unless you have special reasons to try and process similar amounts of data from each partition.
 
-session.timeout.ms and heartbeat.interval.ms
+``session.timeout.ms and heartbeat.interval.ms``
 The amount of time a consumer can be out of contact with the brokers while still considered alive defaults to 10 seconds. If more than session.timeout.ms passes without the consumer sending a heartbeat to the group coordinator, it is considered dead and the group coordinator will trigger a rebalance of the consumer group to allocate partitions from the dead consumer to the other consumers in the group. This property is closely related to heartbeat.interval.ms, which controls how frequently the Kafka consumer will send a heartbeat to the group coordinator, whereas ses⁠sion.timeout.ms controls how long a consumer can go without sending a heartbeat. Therefore, those two properties are typically modified together—heartbeat.​interval.ms must be lower than session.timeout.ms and is usually set to one-third of the timeout value. So if session.timeout.ms is 3 seconds, heartbeat.​inter⁠val.ms should be 1 second. Setting session.timeout.ms lower than the default will allow consumer groups to detect and recover from failure sooner but may also cause unwanted rebalances. Setting session.timeout.ms higher will reduce the chance of accidental rebalance but also means it will take longer to detect a real failure.
 
-max.poll.interval.ms
+``max.poll.interval.ms``
 This property lets you set the length of time during which the consumer can go without polling before it is considered dead. As mentioned earlier, heartbeats and session timeouts are the main mechanism by which Kafka detects dead consumers and takes their partitions away. However, we also mentioned that heartbeats are sent by a background thread. There is a possibility that the main thread consuming from Kafka is deadlocked, but the background thread is still sending heartbeats. This means that records from partitions owned by this consumer are not being processed. The easiest way to know whether the consumer is still processing records is to check whether it is asking for more records. However, the intervals between requests for more records are difficult to predict and depend on the amount of available data, the type of processing done by the consumer, and sometimes on the latency of additional services. In applications that need to do time-consuming processing on each record that is returned, max.poll.records is used to limit the amount of data returned and therefore limit the duration before the application is available to poll() again. Even with max.poll.records defined, the interval between calls to poll() is difficult to predict, and max.poll.interval.ms is used as a fail-safe or backstop. It has to be an interval large enough that it will very rarely be reached by a healthy consumer but low enough to avoid significant impact from a hanging consumer. The default value is 5 minutes. When the timeout is hit, the background thread will send a “leave group” request to let the broker know that the consumer is dead and the group must rebalance, and then stop sending heartbeats.
 
-default.api.timeout.ms
+``default.api.timeout.ms``
 This is the timeout that will apply to (almost) all API calls made by the consumer when you don’t specify an explicit timeout while calling the API. The default is 1 minute, and since it is higher than the request timeout default, it will include a retry when needed. The notable exception to APIs that use this default is the poll() method that always requires an explicit timeout.
 
-request.timeout.ms
+``request.timeout.ms``
 This is the maximum amount of time the consumer will wait for a response from the broker. If the broker does not respond within this time, the client will assume the broker will not respond at all, close the connection, and attempt to reconnect. This configuration defaults to 30 seconds, and it is recommended not to lower it. It is important to leave the broker with enough time to process the request before giving up—there is little to gain by resending requests to an already overloaded broker, and the act of disconnecting and reconnecting adds even more overhead.
 
-auto.offset.reset
+``auto.offset.reset``
 This property controls the behavior of the consumer when it starts reading a partition for which it doesn’t have a committed offset, or if the committed offset it has is invalid (usually because the consumer was down for so long that the record with that offset was already aged out of the broker). The default is “latest,” which means that lacking a valid offset, the consumer will start reading from the newest records (records that were written after the consumer started running). The alternative is “earliest,” which means that lacking a valid offset, the consumer will read all the data in the partition, starting from the very beginning. Setting auto.offset.reset to none will cause an exception to be thrown when attempting to consume from an invalid offset.
 
-enable.auto.commit
+``enable.auto.commit``
 This parameter controls whether the consumer will commit offsets automatically, and defaults to true. Set it to false if you prefer to control when offsets are committed, which is necessary to minimize duplicates and avoid missing data. If you set enable.auto.commit to true, then you might also want to control how frequently offsets will be committed using auto.commit.interval.ms. We’ll discuss the different options for committing offsets in more depth later in this chapter.
 
-partition.assignment.strategy
+``partition.assignment.strategy``
 We learned that partitions are assigned to consumers in a consumer group. A PartitionAssignor is a class that, given consumers and topics they subscribed to, decides which partitions will be assigned to which consumer. By default, Kafka has the following assignment strategies:
 
-Range
+``Range``
 Assigns to each consumer a consecutive subset of partitions from each topic it subscribes to. So if consumers C1 and C2 are subscribed to two topics, T1 and T2, and each of the topics has three partitions, then C1 will be assigned partitions 0 and 1 from topics T1 and T2, while C2 will be assigned partition 2 from those topics. Because each topic has an uneven number of partitions and the assignment is done for each topic independently, the first consumer ends up with more partitions than the second. This happens whenever Range assignment is used and the number of consumers does not divide the number of partitions in each topic neatly.
 
-RoundRobin
+``RoundRobin``
 Takes all the partitions from all subscribed topics and assigns them to consumers sequentially, one by one. If C1 and C2 described previously used RoundRobin assignment, C1 would have partitions 0 and 2 from topic T1, and partition 1 from topic T2. C2 would have partition 1 from topic T1, and partitions 0 and 2 from topic T2. In general, if all consumers are subscribed to the same topics (a very common scenario), RoundRobin assignment will end up with all consumers having the same number of partitions (or at most one partition difference).
 
-Sticky
+``Sticky``
 The Sticky Assignor has two goals: the first is to have an assignment that is as balanced as possible, and the second is that in case of a rebalance, it will leave as many assignments as possible in place, minimizing the overhead associated with moving partition assignments from one consumer to another. In the common case where all consumers are subscribed to the same topic, the initial assignment from the Sticky Assignor will be as balanced as that of the RoundRobin Assignor. Subsequent assignments will be just as balanced but will reduce the number of partition movements. In cases where consumers in the same group subscribe to different topics, the assignment achieved by Sticky Assignor is more balanced than that of the RoundRobin Assignor.
 
-Cooperative Sticky
+``Cooperative Sticky``
 This assignment strategy is identical to that of the Sticky Assignor but supports cooperative rebalances in which consumers can continue consuming from the partitions that are not reassigned. See “Consumer Groups and Partition Rebalance” to read more about cooperative rebalancing, and note that if you are upgrading from a version older than 2.3, you’ll need to follow a specific upgrade path in order to enable the cooperative sticky assignment strategy, so pay extra attention to the upgrade guide.
 
 The partition.assignment.strategy allows you to choose a partition assignment strategy. The default is org.apache.kafka.clients.consumer.RangeAssignor, which implements the Range strategy described earlier. You can replace it with org.apache.kafka.clients.consumer.RoundRobinAssignor, org.apache.kafka.​clients.consumer.StickyAssignor, or org.apache.kafka.clients.consumer.​CooperativeStickyAssignor. A more advanced option is to implement your own assignment strategy, in which case partition.assignment.strategy should point to the name of your class.
 
-client.id
+``client.id``
 This can be any string, and will be used by the brokers to identify requests sent from the client, such as fetch requests. It is used in logging and metrics, and for quotas.
 
-client.rack
-By default, consumers will fetch messages from the leader replica of each partition. However, when the cluster spans multiple datacenters or multiple cloud availability zones, there are advantages both in performance and in cost to fetching messages from a replica that is located in the same zone as the consumer. To enable fetching from the closest replica, you need to set the client.rack configuration and identify the zone in which the client is located. Then you can configure the brokers to replace the default replica.selector.class with org.apache.kafka.common.replica.RackAwareReplicaSelector.
+``client.rack``
+By default, consumers will fetch messages from the leader replica of each partition. However, when the cluster spans multiple datacenters or multiple cloud availability zones, there are advantages both in performance and in cost to fetching messages from a replica that is located in the same zone as the consumer. To enable fetching from the closest replica, you need to set the client.rack configuration and identify the zone in which the client is located. Then you can configure the brokers to replace the default replica.selector.class with ``org.apache.kafka.common.replica.RackAwareReplicaSelector``.
 
 You can also implement your own replica.selector.class with custom logic for choosing the best replica to consume from, based on client metadata and partition metadata.
 
-group.instance.id
+``group.instance.id``
 This can be any unique string and is used to provide a consumer with static group membership.
 
-receive.buffer.bytes and send.buffer.bytes
+``receive.buffer.bytes and send.buffer.bytes``
 These are the sizes of the TCP send and receive buffers used by the sockets when writing and reading data. If these are set to –1, the OS defaults will be used. It can be a good idea to increase these when producers or consumers communicate with brokers in a different datacenter, because those network links typically have higher latency and lower bandwidth.
 
-offsets.retention.minutes
+``offsets.retention.minutes``
 This is a broker configuration, but it is important to be aware of it due to its impact on consumer behavior. As long as a consumer group has active members (i.e., members that are actively maintaining membership in the group by sending heartbeats), the last offset committed by the group for each partition will be retained by Kafka, so it can be retrieved in case of reassignment or restart. However, once a group becomes empty, Kafka will only retain its committed offsets to the duration set by this configuration—7 days by default. Once the offsets are deleted, if the group becomes active again it will behave like a brand-new consumer group with no memory of anything it consumed in the past. Note that this behavior changed a few times, so if you use versions older than 2.1.0, check the documentation for your version for the expected behavior.
 
-Commits and Offsets
+## Commits and Offsets
 Whenever we call poll(), it returns records written to Kafka that consumers in our group have not read yet. This means that we have a way of tracking which records were read by a consumer of the group. As discussed before, one of Kafka’s unique characteristics is that it does not track acknowledgments from consumers the way many JMS queues do. Instead, it allows consumers to use Kafka to track their position (offset) in each partition.
 
 We call the action of updating the current position in the partition an offset commit. Unlike traditional message queues, Kafka does not commit records individually. Instead, consumers commit the last message they’ve successfully processed from a partition and implicitly assume that every message before the last was also successfully processed.
@@ -234,18 +273,21 @@ How does a consumer commit an offset? It sends a message to Kafka, which updates
 
 If the committed offset is smaller than the offset of the last message the client processed, the messages between the last processed offset and the committed offset will be processed twice. See Figure 4-8.
 
-kdg2 0408
+
+![Figure 4-8](../images/ch04/kdg2_0408.png)
 Figure 4-8. Reprocessed messages
+
 If the committed offset is larger than the offset of the last message the client actually processed, all messages between the last processed offset and the committed offset will be missed by the consumer group. See Figure 4-9.
 
-kdg2 0409
+![Figure 4-9](../images/ch04/kdg2_0409.png)
 Figure 4-9. Missed messages between offsets
+
 Clearly, managing offsets has a big impact on the client application. The KafkaConsumer API provides multiple ways of committing offsets.
 
-Which Offset Is Committed?
+### Which Offset Is Committed?
 When committing offsets either automatically or without specifying the intended offsets, the default behavior is to commit the offset after the last offset that was returned by poll(). This is important to keep in mind when attempting to manually commit specific offsets or seek to commit specific offsets. However, it is also tedious to repeatedly read “Commit the offset that is one larger than the last offset the client received from poll(),” and 99% of the time it does not matter. So, we are going to write “Commit the last offset” when we refer to the default behavior, and if you need to manually manipulate offsets, please keep this note in mind.
 
-Automatic Commit
+### Automatic Commit
 The easiest way to commit offsets is to allow the consumer to do it for you. If you configure enable.auto.commit=true, then every five seconds the consumer will commit the latest offset that your client received from poll(). The five-second interval is the default and is controlled by setting auto.commit.interval.ms. Just like everything else in the consumer, the automatic commits are driven by the poll loop. Whenever you poll, the consumer checks if it is time to commit, and if it is, it will commit the offsets it returned in the last poll.
 
 Before using this convenient option, however, it is important to understand the consequences.
@@ -412,7 +454,7 @@ Here, we decide to commit current offsets every 1,000 records. In your applicati
 5
 I chose to call commitAsync() (without a callback, therefore the second parameter is null), but commitSync() is also completely valid here. Of course, when committing specific offsets you still need to perform all the error handling we’ve seen in previous sections.
 
-Rebalance Listeners
+## Rebalance Listeners
 As we mentioned in the previous section about committing offsets, a consumer will want to do some cleanup work before exiting and also before partition rebalancing.
 
 If you know your consumer is about to lose ownership of a partition, you will want to commit offsets of the last event you’ve processed. Perhaps you also need to close file handles, database connections, and such.
@@ -497,7 +539,7 @@ However, when we are about to lose a partition due to rebalancing, we need to co
 4
 The most important part: pass the ConsumerRebalanceListener to the subscribe() method so it will get invoked by the consumer.
 
-Consuming Records with Specific Offsets
+## Consuming Records with Specific Offsets
 So far we’ve seen how to use poll() to start consuming messages from the last committed offset in each partition and to proceed in processing all messages in sequence. However, sometimes you want to start reading at a different offset. Kafka offers a variety of methods that cause the next poll() to start consuming in a different offset.
 
 If you want to start reading all messages from the beginning of the partition, or you want to skip all the way to the end of the partition and start consuming only new messages, there are APIs specifically for that: seekToBeginning(Collection<TopicPartition> tp) and seekToEnd(Collection<TopicPartition> tp).
@@ -526,7 +568,7 @@ Then we get the offsets that were current at these timestamps. This method sends
 3
 Finally, we reset the offset on each partition to the offset that was returned in the previous step.
 
-But How Do We Exit?
+## But How Do We Exit?
 Earlier in this chapter, when we discussed the poll loop, we told you not to worry about the fact that the consumer polls in an infinite loop, and that we would discuss how to exit the loop cleanly. So, let’s discuss how to exit cleanly.
 
 When you decide to shut down the consumer, and you want to exit immediately even though the consumer may be waiting on a long poll(), you will need another thread to call consumer.wakeup(). If you are running the consumer loop in the main thread, this can be done from ShutdownHook. Note that consumer.wakeup() is the only consumer method that is safe to call from a different thread. Calling wakeup will cause poll() to exit with WakeupException, or if consumer.wakeup() was called while the thread was not waiting on poll, the exception will be thrown on the next iteration when poll() is called. The WakeupException doesn’t need to be handled, but before exiting the thread, you must call consumer.close(). Closing the consumer will commit offsets if needed and will send the group coordinator a message that the consumer is leaving the group. The consumer coordinator will trigger rebalancing immediately, and you won’t need to wait for the session to timeout before partitions from the consumer you are closing will be assigned to another consumer in the group.
@@ -582,7 +624,7 @@ Another thread calling wakeup will cause poll to throw a WakeupException. You’
 4
 Before exiting the consumer, make sure you close it cleanly.
 
-Deserializers
+## Deserializers
 As discussed in the previous chapter, Kafka producers require serializers to convert objects into byte arrays that are then sent to Kafka. Similarly, Kafka consumers require deserializers to convert byte arrays received from Kafka into Java objects. In previous examples, we just assumed that both the key and the value of each message are strings, and we used the default StringDeserializer in the consumer configuration.
 
 In Chapter 3 about the Kafka producer, we saw how to serialize custom types and how to use Avro and AvroSerializers to generate Avro objects from schema definitions and then serialize them when producing messages to Kafka. We will now look at how to create custom deserializers for your own objects and how to use Avro and its deserializers.
@@ -733,13 +775,13 @@ We specify the generated class, Customer, as the type for the record value.
 4
 record.value() is a Customer instance, and we can use it accordingly.
 
-Standalone Consumer: Why and How to Use a Consumer Without a Group
+## Standalone Consumer: Why and How to Use a Consumer Without a Group
 So far, we have discussed consumer groups, which are where partitions are assigned automatically to consumers and are rebalanced automatically when consumers are added or removed from the group. Typically, this behavior is just what you want, but in some cases you want something much simpler. Sometimes you know you have a single consumer that always needs to read data from all the partitions in a topic, or from a specific partition in a topic. In this case, there is no reason for groups or rebalances—just assign the consumer-specific top:1ic and/or partitions, consume messages, and commit offsets on occasion (although you still need to configure group.id to commit offsets, without calling subscribe the consumer won’t join any group).
 
 When you know exactly which partitions the consumer should read, you don’t subscribe to a topic—instead, you assign yourself a few partitions. A consumer can either subscribe to topics (and be part of a consumer group) or assign itself partitions, but not both at the same time.
 
 Here is an example of how a consumer can assign itself all partitions of a specific topic and consume from them:
-
+```java
 Duration timeout = Duration.ofMillis(100);
 List<PartitionInfo> partitionInfos = null;
 partitionInfos = consumer.partitionsFor("topic"); 1
@@ -762,6 +804,7 @@ if (partitionInfos != null) {
         consumer.commitSync();
     }
 }
+```
 1
 We start by asking the cluster for the partitions available in the topic. If you only plan on consuming a specific partition, you can skip this part.
 
@@ -770,7 +813,7 @@ Once we know which partitions we want, we call assign() with the list.
 
 Other than the lack of rebalances and the need to manually find the partitions, everything else is business as usual. Keep in mind that if someone adds new partitions to the topic, the consumer will not be notified. You will need to handle this by checking consumer.partitionsFor() periodically or simply by bouncing the application whenever partitions are added.
 
-Summary
+## Summary
 We started this chapter with an in-depth explanation of Kafka’s consumer groups and the way they allow multiple consumers to share the work of reading events from topics. We followed the theoretical discussion with a practical example of a consumer subscribing to a topic and continuously reading events. We then looked into the most important consumer configuration parameters and how they affect consumer behavior. We dedicated a large part of the chapter to discussing offsets and how consumers keep track of them. Understanding how consumers commit offsets is critical when writing reliable consumers, so we took time to explain the different ways this can be done. We then discussed additional parts of the Consumer APIs, handling rebalances, and closing the consumer.
 
 We concluded by discussing the deserializers used by consumers to turn bytes stored in Kafka into Java objects that the applications can process. We discussed Avro deserializers in some detail, even though they are just one type of deserializer you can use, because these are most commonly used with Kafka.
