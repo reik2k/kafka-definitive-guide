@@ -36,14 +36,14 @@ Before discussing the specifics of Apache Kafka, it is important for us to under
 Many use cases for publish/subscribe start out the same way: with a simple message queue or interprocess communication channel.
 
 **Figure 1-1: A single, direct metrics publisher**
-![Figure 1-1](../images/ch01/figure-1-1-single-metrics-publisher.png)
+![Figure 1-1](../images/ch01/kdg2_0101.png)
 
 For example, you create an application that needs to send monitoring information somewhere, so you open a direct connection from your application to an app that displays your metrics on a dashboard, and push metrics over that connection.
 
 This is a simple solution to a simple problem that works when you are getting started with monitoring. Before long, you decide you would like to analyze your metrics over a longer term, and that doesn't work well in the dashboard. You start a new service that can receive metrics, store them, and analyze them. Over time, you have multiple applications publishing metrics to multiple destinations.
 
 **Figure 1-2: Many metrics publishers, using direct connections**
-![Figure 1-2](../images/ch01/figure-1-2-many-publishers-direct.png)
+![Figure 1-2](../images/ch01/kdg2_0102.png)
 
 This architecture can become very complex, with many point-to-point connections that are hard to maintain.
 
@@ -52,7 +52,7 @@ This architecture can become very complex, with many point-to-point connections 
 At the same time that you have been dealing with metrics, others in your organization have been building similar systems for logs and user activity tracking.
 
 **Figure 1-4: Multiple publish/subscribe systems**
-![Figure 1-4](../images/ch01/figure-1-4-multiple-pubsub.png)
+![Figure 1-4](../images/ch01/kdg2_0104.png)
 
 Your company ends up maintaining multiple independent systems for different types of data, each with their own bugs and limitations.
 
@@ -85,7 +85,7 @@ Many Kafka developers favor the use of **Apache Avro**, which is a serialization
 Messages in Kafka are categorized into **topics**. The closest analogies for a topic are a database table or a folder in a filesystem. Topics are additionally broken down into a number of **partitions**.
 
 **Figure 1-5: Representation of a topic with multiple partitions**
-![Figure 1-5](../images/ch01/figure-1-5-topic-partitions.png)
+![Figure 1-5](../images/ch01/kdg2_0105.png)
 
 A partition is a single log. Messages are written to it in an append-only fashion and are read in order from beginning to end. Note that as a topic typically has multiple partitions, there is no guarantee of message ordering across the entire topic, just within a single partition.
 
@@ -104,7 +104,7 @@ Consumers keep track of which messages they have already consumed by keeping tra
 Consumers work as part of a **consumer group**, which is one or more consumers that work together to consume a topic.
 
 **Figure 1-6: A consumer group reading from a topic**
-![Figure 1-6](../images/ch01/figure-1-6-consumer-group.png)
+![Figure 1-6](../images/ch01/kdg2_0106.png)
 
 ### Brokers and Clusters
 
@@ -115,7 +115,7 @@ Kafka brokers are designed to operate as part of a **cluster**. Within a cluster
 A partition is owned by a single broker in the cluster, and that broker is called the **leader** of the partition. A **replicated partition** is assigned to additional brokers, called **followers** of the partition. Replication provides redundancy of messages in the partition.
 
 **Figure 1-7: Replication of partitions in a cluster**
-![Figure 1-7](../images/ch01/figure-1-7-replication.png)
+![Figure 1-7](../images/ch01/kdg2_0107.png)
 
 ### Retention
 
@@ -136,7 +136,7 @@ As Kafka deployments grow, it is often advantageous to have multiple clusters. T
 The **MirrorMaker** tool is used for replicating data to other clusters. At its core, MirrorMaker is simply a Kafka consumer and producer, linked together with a queue.
 
 **Figure 1-8: Multiple datacenters architecture**
-![Figure 1-8](../images/ch01/figure-1-8-multiple-datacenters.png)
+![Figure 1-8](../images/ch01/kdg2_0108.png)
 
 ---
 
@@ -183,7 +183,7 @@ The core Apache Kafka project has also added some streaming platform features:
 Apache Kafka provides the circulatory system for the data ecosystem.
 
 **Figure 1-9: A big data ecosystem**
-![Figure 1-9](../images/ch01/figure-1-9-ecosystem.png)
+![Figure 1-9](../images/ch01/kdg2_0109.png)
 
 It carries messages between the various members of the infrastructure, providing a consistent interface for all clients. When coupled with a system to provide message schemas, producers and consumers no longer require tight coupling or direct connections of any sort.
 
