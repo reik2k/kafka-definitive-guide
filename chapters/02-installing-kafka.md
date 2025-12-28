@@ -38,7 +38,7 @@ It is recommended to install the latest released patch version of your Java envi
 Apache Kafka uses Apache ZooKeeper to store metadata about the Kafka cluster, as well as consumer client details. ZooKeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services. This book won't go into extensive detail about ZooKeeper but will limit explanations to only what is needed to operate Kafka.
 
 **Figure 2-1: Kafka and ZooKeeper Architecture**
-![Figure 2-1: Kafka and ZooKeeper](../images/ch02/figure-2-1.png)
+![Figure 2-1: Kafka and ZooKeeper](../images/ch02/kdg2_0201.png)
 
 Kafka has been tested extensively with the stable 3.5 release of ZooKeeper and is regularly updated to include the latest release. In this book, we will be using ZooKeeper 3.5.9, which can be downloaded from the [ZooKeeper website](https://zookeeper.apache.org/).
 
@@ -240,7 +240,7 @@ The Kafka broker limits the maximum size of a message that can be produced with 
 ## Selecting Hardware
 
 **Figure 2-2: A Simple Kafka Cluster**
-![Figure 2-2: A Simple Kafka Cluster](../images/ch02/figure-2-2.png)
+![Figure 2-2: A Simple Kafka Cluster](../images/ch02/kdg2_0202.png)
 
 Selecting appropriate hardware for a Kafka broker depends on several performance-critical factors:
 

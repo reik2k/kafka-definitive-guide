@@ -28,7 +28,7 @@ There are many reasons an application might need to write messages to Kafka: rec
 Those diverse use cases also imply diverse requirements: is every message critical, or can we tolerate loss of messages? Are we OK with accidentally duplicating messages? Are there any strict latency or throughput requirements we need to support?
 
 **Figure 3-1: High-level overview of Kafka producer components**
-![Figure 3-1: Kafka Producer Components](../images/ch03/03-figure-01.png)
+![Figure 3-1: Kafka Producer Components](../images/ch03/kdg2_0301.png)
 
 We start producing messages to Kafka by creating a `ProducerRecord`, which must include the topic we want to send the record to and a value. Optionally, we can also specify a key, a partition, a timestamp, and/or a collection of headers. Once we send the `ProducerRecord`, the first thing the producer will do is serialize the key and value objects to byte arrays so they can be sent over the network.
 
@@ -144,12 +144,12 @@ public class CustomerSerializer implements Serializer {
 Apache Avro is a language-neutral data serialization format. One of the most interesting features of Avro is that when the application that is writing messages switches to a new but compatible schema, the applications reading the data can continue processing messages without requiring any change or update.
 
 **Figure 3-2: Sequence diagram of delivery time breakdown inside Kafka producer**
-![Figure 3-2: Delivery Time Breakdown](../images/ch03/03-figure-02.png)
+![Figure 3-2: Delivery Time Breakdown](../images/ch03/kdg2_0302.png)
 
 To achieve this, we use a Schema Registry. The idea is to store all the schemas used to write data to Kafka in the registry. Then we simply store the identifier for the schema in the record we produce to Kafka. The consumers can then use the identifier to pull the record out of the Schema Registry and deserialize the data.
 
 **Figure 3-3: Flow diagram of serialization and deserialization of Avro records**
-![Figure 3-3: Avro Serialization Flow](../images/ch03/03-figure-03.png)
+![Figure 3-3: Avro Serialization Flow](../images/ch03/kdg2_0303.png)
 
 ```java
 Properties props = new Properties();
