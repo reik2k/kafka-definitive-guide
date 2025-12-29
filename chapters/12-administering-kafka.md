@@ -129,7 +129,7 @@ It is sometimes necessary to increase the number of partitions for a topic. The 
 
 > **ADJUSTING KEYED TOPICS**
 >
-> Topics that are produced with keyed messages can be very difficult to add partitions to from a consumer's point of view. This is because the mapping of keys to partitions will change when the number of partitions is changed. For this reason, it is advisable to set the number of partitions for a topic that will contain keyed messages once, when the topic is created, and avoid resizing the topic.
+> *Topics that are produced with keyed messages can be very difficult to add partitions to from a consumer's point of view. This is because the mapping of keys to partitions will change when the number of partitions is changed. For this reason, it is advisable to set the number of partitions for a topic that will contain keyed messages once, when the topic is created, and avoid resizing the topic.*
 
 ### Reducing Partitions
 
@@ -233,7 +233,7 @@ The import offset tool takes the file produced by exporting offsets and uses it 
 
 > **STOP CONSUMERS FIRST**
 >
-> Before performing this step, all consumers in the group must be stopped. They will not read the new offsets if they are written while the consumer group is active.
+> *Before performing this step, all consumers in the group must be stopped. They will not read the new offsets if they are written while the consumer group is active.*
 
 ```bash
 # kafka-consumer-groups.sh --bootstrap-server localhost:9092 \
@@ -507,7 +507,7 @@ If you are running a cluster with delete topics disabled, or if you find yoursel
 
 > **SHUT DOWN BROKERS FIRST**
 >
-> Modifying the cluster metadata in ZooKeeper when the cluster is online is a very dangerous operation and can put the cluster into an unstable state. Never attempt to delete or modify topic metadata in ZooKeeper while the cluster is online.
+> *Modifying the cluster metadata in ZooKeeper when the cluster is online is a very dangerous operation and can put the cluster into an unstable state. Never attempt to delete or modify topic metadata in ZooKeeper while the cluster is online.*
 
 To delete a topic from the cluster:
 
@@ -525,4 +525,4 @@ As you begin to scale your Kafka clusters larger, even the use of these tools ma
 ## External Resources
 
 - [Apache Kafka website](https://kafka.apache.org/)
-- [Apache Kafka documentation - Broker Configs](https://oreil.ly/R8hhb)
+- [Apache Kafka documentation - Broker Configs](https://kafka.apache.org/41/configuration/broker-configs/)

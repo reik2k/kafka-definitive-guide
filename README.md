@@ -277,8 +277,8 @@
 
 ### Appendices
 
-- **[Appendix A: Installing Kafka On Other Operating Systems](./chapters/appendix-a-installing-other-os.md)**
-- **[Appendix B: Additional Kafka Tools](./chapters/appendix-b-additional-tools.md)**
+- **[Appendix A: Installing Kafka On Other Operating Systems](./chapters/appendix-a-installing-kafka-other-os.md)**
+- **[Appendix B: Additional Kafka Tools](./chapters/appendix-b-additional-kafka-tools.md)**
 - **[Index](./chapters/index.md)**
 
 ---
