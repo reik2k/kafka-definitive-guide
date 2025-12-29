@@ -1,4 +1,4 @@
-Chapter 4. Kafka Consumers: Reading Data from Kafka
+# Chapter 4. Kafka Consumers: Reading Data from Kafka
 Applications that need to read data from Kafka use a KafkaConsumer to subscribe to Kafka topics and receive messages from these topics. Reading data from Kafka is a bit different than reading data from other messaging systems, and there are a few unique concepts and ideas involved. It can be difficult to understand how to use the Consumer API without understanding these concepts first. We’ll start by explaining some of the important concepts, and then we’ll go through some examples that show the different ways Consumer APIs can be used to implement applications with varying requirements.
 
 ## Table of Contents
