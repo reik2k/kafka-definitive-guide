@@ -399,3 +399,4 @@ This content is derived from "Kafka: The Definitive Guide, 2nd Edition" publishe
 
 **Last Updated:** December 2025  
 **Repository:** [github.com/reik2k/kafka-definitive-guide](https://github.com/reik2k/kafka-definitive-guide)
+
