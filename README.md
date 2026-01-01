@@ -1,5 +1,5 @@
 # Kafka: The Definitive Guide, 2nd Edition
-
+ 
 ## Complete Markdown Version with All Chapters, Figures, and Hyperlinks
 
 **Authors:** Gwen Shapira, Todd Palino, Rajini Sivaram, Krit Petty  
